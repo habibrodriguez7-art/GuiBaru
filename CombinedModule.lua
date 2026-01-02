@@ -1,6 +1,6 @@
 local CombinedModules = {}
 
--- Module instantwdwd
+-- Module instantxax
 CombinedModules.instant = (function()
     -- ⚡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -7460,6 +7460,2272 @@ function Notification.Send(title, text, duration)
 end
 
 return Notification
+
+end)()
+
+-- Module AutoFavorite
+CombinedModules.AutoFavorite = (function()
+-- ============================================
+-- AUTO FAVORITE MODULE - LYNX GUI COMPATIBLE
+-- Optimized for integration with LynxGUI v2.3.1
+-- FIXED: Instant loading, no delay on first toggle
+-- ============================================
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local AutoFavoriteModule = {}
+
+-- ============================================
+-- CONFIGURATION
+-- ============================================
+local TIER_MAP = {
+    ["Common"] = 1,
+    ["Uncommon"] = 2,
+    ["Rare"] = 3,
+    ["Epic"] = 4,
+    ["Legendary"] = 5,
+    ["Mythic"] = 6,
+    ["SECRET"] = 7
+}
+
+local TIER_NAMES = {
+    [1] = "Common",
+    [2] = "Uncommon",
+    [3] = "Rare",
+    [4] = "Epic",
+    [5] = "Legendary",
+    [6] = "Mythic",
+    [7] = "SECRET"
+}
+
+-- ============================================
+-- STATE VARIABLES
+-- ============================================
+local AUTO_FAVORITE_TIERS = {}
+local AUTO_FAVORITE_ENABLED = false
+local AUTO_FAVORITE_VARIANTS = {}
+local AUTO_FAVORITE_VARIANT_ENABLED = false
+
+-- ============================================
+-- CACHED REFERENCES (Pre-loaded)
+-- ============================================
+local FavoriteEvent, NotificationEvent, itemsModule
+local referencesInitialized = false
+local initializationAttempted = false
+
+local function InitializeReferences()
+    if referencesInitialized then return true end
+    if initializationAttempted then return referencesInitialized end
+    
+    initializationAttempted = true
+    
+    local success = pcall(function()
+        -- Reduced timeout from 5 to 2 seconds for faster loading
+        FavoriteEvent = ReplicatedStorage:WaitForChild("Packages", 2)
+            :WaitForChild("_Index", 2)
+            :WaitForChild("sleitnick_net@0.2.0", 2)
+            :WaitForChild("net", 2)
+            :WaitForChild("RE/FavoriteItem", 2)
+
+        NotificationEvent = ReplicatedStorage:WaitForChild("Packages", 2)
+            :WaitForChild("_Index", 2)
+            :WaitForChild("sleitnick_net@0.2.0", 2)
+            :WaitForChild("net", 2)
+            :WaitForChild("RE/ObtainedNewFishNotification", 2)
+
+        itemsModule = require(ReplicatedStorage:WaitForChild("Items", 2))
+        referencesInitialized = true
+    end)
+    
+    if not success then
+        initializationAttempted = false -- Allow retry
+    end
+    
+    return success
+end
+
+-- ============================================
+-- FISH DATA HELPER (Cached)
+-- ============================================
+local fishDataCache = {}
+
+local function getFishData(itemId)
+    if fishDataCache[itemId] then
+        return fishDataCache[itemId]
+    end
+    
+    if not itemsModule then 
+        InitializeReferences()
+        if not itemsModule then return nil end
+    end
+    
+    for _, fish in pairs(itemsModule) do
+        if fish.Data and fish.Data.Id == itemId then
+            fishDataCache[itemId] = fish
+            return fish
+        end
+    end
+    
+    return nil
+end
+
+-- ============================================
+-- TIER MANAGEMENT (GUI Compatible)
+-- ============================================
+function AutoFavoriteModule.EnableTiers(tierNames)
+    if type(tierNames) == "string" then
+        tierNames = {tierNames}
+    end
+    
+    for _, tierName in ipairs(tierNames) do
+        local tier = TIER_MAP[tierName]
+        if tier then
+            AUTO_FAVORITE_TIERS[tier] = true
+            AUTO_FAVORITE_ENABLED = true
+        end
+    end
+end
+
+function AutoFavoriteModule.DisableTiers(tierNames)
+    if type(tierNames) == "string" then
+        tierNames = {tierNames}
+    end
+    
+    for _, tierName in ipairs(tierNames) do
+        local tier = TIER_MAP[tierName]
+        if tier then
+            AUTO_FAVORITE_TIERS[tier] = nil
+        end
+    end
+    
+    -- Check if any tier still enabled
+    local anyEnabled = false
+    for _ in pairs(AUTO_FAVORITE_TIERS) do
+        anyEnabled = true
+        break
+    end
+    AUTO_FAVORITE_ENABLED = anyEnabled
+end
+
+function AutoFavoriteModule.ClearTiers()
+    table.clear(AUTO_FAVORITE_TIERS)
+    AUTO_FAVORITE_ENABLED = false
+end
+
+function AutoFavoriteModule.GetEnabledTiers()
+    local enabled = {}
+    for tier, _ in pairs(AUTO_FAVORITE_TIERS) do
+        table.insert(enabled, TIER_NAMES[tier])
+    end
+    return enabled
+end
+
+function AutoFavoriteModule.IsTierEnabled(tierName)
+    local tier = TIER_MAP[tierName]
+    return tier and AUTO_FAVORITE_TIERS[tier] == true
+end
+
+-- ============================================
+-- VARIANT/MUTATION MANAGEMENT (GUI Compatible)
+-- ============================================
+function AutoFavoriteModule.EnableVariants(variantNames)
+    if type(variantNames) == "string" then
+        variantNames = {variantNames}
+    end
+    
+    for _, variantName in ipairs(variantNames) do
+        AUTO_FAVORITE_VARIANTS[variantName] = true
+        AUTO_FAVORITE_VARIANT_ENABLED = true
+    end
+end
+
+function AutoFavoriteModule.DisableVariants(variantNames)
+    if type(variantNames) == "string" then
+        variantNames = {variantNames}
+    end
+    
+    for _, variantName in ipairs(variantNames) do
+        AUTO_FAVORITE_VARIANTS[variantName] = nil
+    end
+    
+    -- Check if any variant still enabled
+    local anyEnabled = false
+    for _ in pairs(AUTO_FAVORITE_VARIANTS) do
+        anyEnabled = true
+        break
+    end
+    AUTO_FAVORITE_VARIANT_ENABLED = anyEnabled
+end
+
+function AutoFavoriteModule.ClearVariants()
+    table.clear(AUTO_FAVORITE_VARIANTS)
+    AUTO_FAVORITE_VARIANT_ENABLED = false
+end
+
+function AutoFavoriteModule.GetEnabledVariants()
+    local enabled = {}
+    for variant, _ in pairs(AUTO_FAVORITE_VARIANTS) do
+        table.insert(enabled, variant)
+    end
+    return enabled
+end
+
+function AutoFavoriteModule.IsVariantEnabled(variantName)
+    return AUTO_FAVORITE_VARIANTS[variantName] == true
+end
+
+-- ============================================
+-- STATUS & INFO (For GUI)
+-- ============================================
+function AutoFavoriteModule.IsEnabled()
+    return AUTO_FAVORITE_ENABLED or AUTO_FAVORITE_VARIANT_ENABLED
+end
+
+function AutoFavoriteModule.IsReady()
+    return referencesInitialized and connectionEstablished
+end
+
+function AutoFavoriteModule.GetStatus()
+    return {
+        TierEnabled = AUTO_FAVORITE_ENABLED,
+        VariantEnabled = AUTO_FAVORITE_VARIANT_ENABLED,
+        EnabledTiers = AutoFavoriteModule.GetEnabledTiers(),
+        EnabledVariants = AutoFavoriteModule.GetEnabledVariants(),
+        Ready = AutoFavoriteModule.IsReady()
+    }
+end
+
+function AutoFavoriteModule.GetAllTiers()
+    return {"Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "SECRET"}
+end
+
+function AutoFavoriteModule.GetAllVariants()
+    return {
+        "Galaxy", "Corrupt", "Gemstone", "Fairy Dust", "Midnight",
+        "Color Burn", "Holographic", "Lightning", "Radioactive",
+        "Ghost", "Gold", "Frozen", "1x1x1x1", "Stone", "Sandy",
+        "Noob", "Moon Fragment", "Festive", "Albino", "Arctic Frost", "Disco"
+    }
+end
+
+-- ============================================
+-- AUTO FAVORITE CONNECTION (Optimized)
+-- ============================================
+local connectionEstablished = false
+local eventConnection = nil
+
+local function EstablishConnection()
+    if connectionEstablished then return true end
+    
+    -- Initialize references if not already done
+    if not referencesInitialized then
+        local success = InitializeReferences()
+        if not success then
+            return false
+        end
+    end
+    
+    -- Setup the connection
+    eventConnection = NotificationEvent.OnClientEvent:Connect(function(itemId, metadata, extraData, boolFlag)
+        -- Quick exit if no filters enabled
+        if not AUTO_FAVORITE_ENABLED and not AUTO_FAVORITE_VARIANT_ENABLED then
+            return
+        end
+        
+        local inventoryItem = extraData and extraData.InventoryItem
+        local uuid = inventoryItem and inventoryItem.UUID
+        
+        -- Quick validation
+        if not uuid or inventoryItem.Favorited then 
+            return 
+        end
+        
+        local shouldFavorite = false
+        local favoriteReason = ""
+        
+        -- =====================
+        -- CHECK TIER
+        -- =====================
+        if AUTO_FAVORITE_ENABLED then
+            local fishData = getFishData(itemId)
+            if fishData and fishData.Data and fishData.Data.Tier then
+                if AUTO_FAVORITE_TIERS[fishData.Data.Tier] then
+                    shouldFavorite = true
+                    local tierName = TIER_NAMES[fishData.Data.Tier] or "Unknown"
+                    favoriteReason = "[TIER: " .. tierName .. "]"
+                end
+            end
+        end
+        
+        -- =====================
+        -- CHECK VARIANT
+        -- =====================
+        if not shouldFavorite and AUTO_FAVORITE_VARIANT_ENABLED then
+            local variantId = metadata and metadata.VariantId
+            if variantId and variantId ~= "None" and AUTO_FAVORITE_VARIANTS[variantId] then
+                shouldFavorite = true
+                favoriteReason = "[VARIANT: " .. variantId .. "]"
+            end
+        end
+        
+        -- =====================
+        -- EXECUTE FAVORITE
+        -- =====================
+        if shouldFavorite then
+            task.delay(0.35, function()
+                pcall(function()
+                    FavoriteEvent:FireServer(uuid)
+                end)
+            end)
+        end
+    end)
+    
+    connectionEstablished = true
+    return true
+end
+
+-- ============================================
+-- START/STOP FUNCTIONS (Added for GUI control)
+-- ============================================
+function AutoFavoriteModule.Start()
+    if not referencesInitialized then
+        local success = InitializeReferences()
+        if not success then
+            return false, "Failed to initialize references"
+        end
+    end
+    
+    if not connectionEstablished then
+        local success = EstablishConnection()
+        if not success then
+            return false, "Failed to establish connection"
+        end
+    end
+    
+    return true, "AutoFavorite started successfully"
+end
+
+function AutoFavoriteModule.Stop()
+    -- Just disable the filters, keep connection alive
+    AUTO_FAVORITE_ENABLED = false
+    AUTO_FAVORITE_VARIANT_ENABLED = false
+    return true, "AutoFavorite stopped"
+end
+
+-- ============================================
+-- PRE-LOAD ON MODULE INITIALIZATION
+-- ============================================
+task.spawn(function()
+    -- Wait for game to be fully loaded
+    if not game:IsLoaded() then
+        game.Loaded:Wait()
+    end
+    
+    -- Small delay to ensure ReplicatedStorage is ready
+    task.wait(0.1)
+    
+    -- Attempt initialization
+    local success = InitializeReferences()
+    
+    if success then
+        -- Establish connection immediately
+        EstablishConnection()
+    else
+        -- Retry after delay if failed
+        task.wait(1)
+        InitializeReferences()
+        EstablishConnection()
+    end
+end)
+
+-- ============================================
+-- CLEANUP
+-- ============================================
+function AutoFavoriteModule.Cleanup()
+    -- Disconnect event
+    if eventConnection then
+        eventConnection:Disconnect()
+        eventConnection = nil
+    end
+    
+    -- Clear data
+    table.clear(AUTO_FAVORITE_TIERS)
+    table.clear(AUTO_FAVORITE_VARIANTS)
+    table.clear(fishDataCache)
+    
+    -- Reset flags
+    AUTO_FAVORITE_ENABLED = false
+    AUTO_FAVORITE_VARIANT_ENABLED = false
+    connectionEstablished = false
+    referencesInitialized = false
+    initializationAttempted = false
+end
+
+return AutoFavoriteModule
+end)()
+
+-- Module BlatantFixedV1
+CombinedModules.BlatantFixedV1 = (function()
+-- ⚠️ BLATANT V2 AUTO FISHING - CLEAN VERSION
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+-- Network initialization
+local netFolder = ReplicatedStorage
+    :WaitForChild("Packages")
+    :WaitForChild("_Index")
+    :WaitForChild("sleitnick_net@0.2.0")
+    :WaitForChild("net")
+
+local RF_ChargeFishingRod = netFolder:WaitForChild("RF/ChargeFishingRod")
+local RF_RequestMinigame = netFolder:WaitForChild("RF/RequestFishingMinigameStarted")
+local RF_CancelFishingInputs = netFolder:WaitForChild("RF/CancelFishingInputs")
+local RF_UpdateAutoFishingState = netFolder:WaitForChild("RF/UpdateAutoFishingState")
+local RE_FishingCompleted = netFolder:WaitForChild("RE/FishingCompleted")
+local RE_MinigameChanged = netFolder:WaitForChild("RE/FishingMinigameChanged")
+
+-- Module table
+local BlatantV2 = {}
+BlatantV2.Active = false
+
+-- Settings
+BlatantV2.Settings = {
+    ChargeDelay = 0.007,
+    CompleteDelay = 0.001,
+    CancelDelay = 0.001
+}
+
+----------------------------------------------------------------
+-- CORE FISHING FUNCTIONS
+----------------------------------------------------------------
+
+local function safeFire(func)
+    task.spawn(function()
+        pcall(func)
+    end)
+end
+
+local function ultraSpamLoop()
+    while BlatantV2.Active do
+        local startTime = tick()
+        
+        safeFire(function()
+            RF_ChargeFishingRod:InvokeServer({[1] = startTime})
+        end)
+        
+        task.wait(BlatantV2.Settings.ChargeDelay)
+        
+        local releaseTime = tick()
+        
+        safeFire(function()
+            RF_RequestMinigame:InvokeServer(1, 0, releaseTime)
+        end)
+        
+        task.wait(BlatantV2.Settings.CompleteDelay)
+        
+        safeFire(function()
+            RE_FishingCompleted:FireServer()
+        end)
+        
+        task.wait(BlatantV2.Settings.CancelDelay)
+        safeFire(function()
+            RF_CancelFishingInputs:InvokeServer()
+        end)
+    end
+end
+
+RE_MinigameChanged.OnClientEvent:Connect(function(state)
+    if not BlatantV2.Active then return end
+    
+    task.spawn(function()
+        task.wait(BlatantV2.Settings.CompleteDelay)
+        
+        safeFire(function()
+            RE_FishingCompleted:FireServer()
+        end)
+        
+        task.wait(BlatantV2.Settings.CancelDelay)
+        safeFire(function()
+            RF_CancelFishingInputs:InvokeServer()
+        end)
+    end)
+end)
+
+----------------------------------------------------------------
+-- PUBLIC API
+----------------------------------------------------------------
+
+-- Update Settings function
+function BlatantV2.UpdateSettings(completeDelay, cancelDelay)
+    if completeDelay ~= nil then
+        BlatantV2.Settings.CompleteDelay = completeDelay
+    end
+    
+    if cancelDelay ~= nil then
+        BlatantV2.Settings.CancelDelay = cancelDelay
+    end
+end
+
+-- Start function
+function BlatantV2.Start()
+    if BlatantV2.Active then 
+        return
+    end
+    
+    BlatantV2.Active = true
+    task.spawn(ultraSpamLoop)
+end
+
+-- Stop function
+function BlatantV2.Stop()
+    if not BlatantV2.Active then 
+        return
+    end
+    
+    BlatantV2.Active = false
+    
+    safeFire(function()
+        RF_UpdateAutoFishingState:InvokeServer(true)
+    end)
+    
+    task.wait(0.2)
+    
+    safeFire(function()
+        RF_CancelFishingInputs:InvokeServer()
+    end)
+end
+
+return BlatantV2
+end)()
+
+-- Module blatantv2
+CombinedModules.blatantv2 = (function()
+-- ⚡ ULTRA BLATANT AUTO FISHING MODULE - CLEAN VERSION
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+-- Network initialization
+local netFolder = ReplicatedStorage
+    :WaitForChild("Packages")
+    :WaitForChild("_Index")
+    :WaitForChild("sleitnick_net@0.2.0")
+    :WaitForChild("net")
+    
+local RF_ChargeFishingRod = netFolder:WaitForChild("RF/ChargeFishingRod")
+local RF_RequestMinigame = netFolder:WaitForChild("RF/RequestFishingMinigameStarted")
+local RF_CancelFishingInputs = netFolder:WaitForChild("RF/CancelFishingInputs")
+local RF_UpdateAutoFishingState = netFolder:WaitForChild("RF/UpdateAutoFishingState")
+local RE_FishingCompleted = netFolder:WaitForChild("RE/FishingCompleted")
+local RE_MinigameChanged = netFolder:WaitForChild("RE/FishingMinigameChanged")
+
+-- Module
+local UltraBlatant = {}
+UltraBlatant.Active = false
+
+UltraBlatant.Settings = {
+    CompleteDelay = 0.73,
+    CancelDelay = 0.3,
+    ReCastDelay = 0.001
+}
+
+-- State tracking
+local FishingState = {
+    lastCompleteTime = 0,
+    completeCooldown = 0.4
+}
+
+----------------------------------------------------------------
+-- CORE FUNCTIONS
+----------------------------------------------------------------
+
+local function safeFire(func)
+    task.spawn(function()
+        pcall(func)
+    end)
+end
+
+local function protectedComplete()
+    local now = tick()
+    
+    if now - FishingState.lastCompleteTime < FishingState.completeCooldown then
+        return false
+    end
+    
+    FishingState.lastCompleteTime = now
+    safeFire(function()
+        RE_FishingCompleted:FireServer()
+    end)
+    
+    return true
+end
+
+local function performCast()
+    local now = tick()
+    
+    safeFire(function()
+        RF_ChargeFishingRod:InvokeServer({[1] = now})
+    end)
+    safeFire(function()
+        RF_RequestMinigame:InvokeServer(1, 0, now)
+    end)
+end
+
+local function fishingLoop()
+    while UltraBlatant.Active do
+        performCast()
+        
+        task.wait(UltraBlatant.Settings.CompleteDelay)
+        
+        if UltraBlatant.Active then
+            protectedComplete()
+        end
+        
+        task.wait(UltraBlatant.Settings.CancelDelay)
+        
+        if UltraBlatant.Active then
+            safeFire(function()
+                RF_CancelFishingInputs:InvokeServer()
+            end)
+        end
+        
+        task.wait(UltraBlatant.Settings.ReCastDelay)
+    end
+end
+
+-- Backup listener
+local lastEventTime = 0
+
+RE_MinigameChanged.OnClientEvent:Connect(function(state)
+    if not UltraBlatant.Active then return end
+    
+    local now = tick()
+    
+    if now - lastEventTime < 0.2 then
+        return
+    end
+    lastEventTime = now
+    
+    if now - FishingState.lastCompleteTime < 0.3 then
+        return
+    end
+    
+    task.spawn(function()
+        task.wait(UltraBlatant.Settings.CompleteDelay)
+        
+        if protectedComplete() then
+            task.wait(UltraBlatant.Settings.CancelDelay)
+            safeFire(function()
+                RF_CancelFishingInputs:InvokeServer()
+            end)
+        end
+    end)
+end)
+
+----------------------------------------------------------------
+-- PUBLIC API
+----------------------------------------------------------------
+
+function UltraBlatant.UpdateSettings(completeDelay, cancelDelay, reCastDelay)
+    if completeDelay ~= nil then
+        UltraBlatant.Settings.CompleteDelay = completeDelay
+    end
+    
+    if cancelDelay ~= nil then
+        UltraBlatant.Settings.CancelDelay = cancelDelay
+    end
+    
+    if reCastDelay ~= nil then
+        UltraBlatant.Settings.ReCastDelay = reCastDelay
+    end
+end
+
+function UltraBlatant.Start()
+    if UltraBlatant.Active then 
+        return
+    end
+    
+    UltraBlatant.Active = true
+    FishingState.lastCompleteTime = 0
+    
+    safeFire(function()
+        RF_UpdateAutoFishingState:InvokeServer(true)
+    end)
+    
+    task.wait(0.2)
+    task.spawn(fishingLoop)
+end
+
+function UltraBlatant.Stop()
+    if not UltraBlatant.Active then 
+        return
+    end
+    
+    UltraBlatant.Active = false
+    
+    safeFire(function()
+        RF_UpdateAutoFishingState:InvokeServer(true)
+    end)
+    
+    task.wait(0.2)
+    
+    safeFire(function()
+        RF_CancelFishingInputs:InvokeServer()
+    end)
+end
+
+return UltraBlatant
+end)()
+
+-- Module NoFishingAnimation
+CombinedModules.NoFishingAnimation = (function()
+-- NoFishingAnimation.lua
+-- Auto freeze karakter di pose fishing dengan ZERO animasi
+-- Ready untuk diintegrasikan ke GUI
+
+local NoFishingAnimation = {}
+NoFishingAnimation.Enabled = false
+NoFishingAnimation.Connection = nil
+NoFishingAnimation.SavedPose = {}
+NoFishingAnimation.ReelingTrack = nil
+NoFishingAnimation.AnimationBlocker = nil
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local localPlayer = Players.LocalPlayer
+
+-- Fungsi untuk find ReelingIdle animation
+local function getOrCreateReelingAnimation()
+    local success, result = pcall(function()
+        local character = localPlayer.Character
+        if not character then return nil end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return nil end
+        
+        local animator = humanoid:FindFirstChildOfClass("Animator")
+        if not animator then return nil end
+        
+        -- Cari animasi ReelingIdle yang sudah ada
+        for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+            local name = track.Name
+            if name:find("Reel") and name:find("Idle") then
+                return track
+            end
+        end
+        
+        -- Cari di semua loaded animations
+        for _, track in pairs(humanoid.Animator:GetPlayingAnimationTracks()) do
+            if track.Animation then
+                if track.Name:find("Reel") then
+                    return track
+                end
+            end
+        end
+        
+        -- Jika tidak ada, coba cari di character tools
+        for _, tool in pairs(character:GetChildren()) do
+            if tool:IsA("Tool") then
+                for _, anim in pairs(tool:GetDescendants()) do
+                    if anim:IsA("Animation") then
+                        local name = anim.Name
+                        if name:find("Reel") and name:find("Idle") then
+                            local track = animator:LoadAnimation(anim)
+                            return track
+                        end
+                    end
+                end
+            end
+        end
+        
+        return nil
+    end)
+    
+    if success then
+        return result
+    end
+    return nil
+end
+
+-- Fungsi untuk capture pose dari Motor6D
+local function capturePose()
+    NoFishingAnimation.SavedPose = {}
+    local count = 0
+    
+    pcall(function()
+        local character = localPlayer.Character
+        if not character then return end
+        
+        -- Simpan SEMUA Motor6D
+        for _, descendant in pairs(character:GetDescendants()) do
+            if descendant:IsA("Motor6D") then
+                NoFishingAnimation.SavedPose[descendant.Name] = {
+                    Part = descendant,
+                    C0 = descendant.C0,
+                    C1 = descendant.C1,
+                    Transform = descendant.Transform
+                }
+                count = count + 1
+            end
+        end
+    end)
+    
+    return count > 0
+end
+
+-- Fungsi untuk STOP SEMUA animasi secara permanent
+local function killAllAnimations()
+    pcall(function()
+        local character = localPlayer.Character
+        if not character then return end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return end
+        
+        local animator = humanoid:FindFirstChildOfClass("Animator")
+        if not animator then return end
+        
+        -- STOP semua playing animations
+        for _, track in pairs(animator:GetPlayingAnimationTracks()) do
+            track:Stop(0)
+            track:Destroy()
+        end
+        
+        -- STOP semua humanoid animations
+        for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
+            track:Stop(0)
+            track:Destroy()
+        end
+    end)
+end
+
+-- Fungsi untuk BLOCK animasi baru agar tidak play
+local function blockNewAnimations()
+    if NoFishingAnimation.AnimationBlocker then
+        NoFishingAnimation.AnimationBlocker:Disconnect()
+    end
+    
+    pcall(function()
+        local character = localPlayer.Character
+        if not character then return end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if not humanoid then return end
+        
+        local animator = humanoid:FindFirstChildOfClass("Animator")
+        if not animator then return end
+        
+        -- Hook semua animasi baru yang mau play
+        NoFishingAnimation.AnimationBlocker = animator.AnimationPlayed:Connect(function(animTrack)
+            if NoFishingAnimation.Enabled then
+                animTrack:Stop(0)
+                animTrack:Destroy()
+            end
+        end)
+    end)
+end
+
+-- Fungsi untuk freeze pose
+local function freezePose()
+    if NoFishingAnimation.Connection then
+        NoFishingAnimation.Connection:Disconnect()
+    end
+    
+    NoFishingAnimation.Connection = RunService.RenderStepped:Connect(function()
+        if not NoFishingAnimation.Enabled then return end
+        
+        pcall(function()
+            local character = localPlayer.Character
+            if not character then return end
+            
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if not humanoid then return end
+            
+            -- FORCE STOP semua animasi setiap frame
+            for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
+                track:Stop(0)
+            end
+            
+            -- APPLY SAVED POSE setiap frame
+            for jointName, poseData in pairs(NoFishingAnimation.SavedPose) do
+                local motor = character:FindFirstChild(jointName, true)
+                if motor and motor:IsA("Motor6D") then
+                    motor.C0 = poseData.C0
+                    motor.C1 = poseData.C1
+                end
+            end
+        end)
+    end)
+end
+
+-- Fungsi Stop
+local function stopFreeze()
+    if NoFishingAnimation.Connection then
+        NoFishingAnimation.Connection:Disconnect()
+        NoFishingAnimation.Connection = nil
+    end
+    
+    if NoFishingAnimation.AnimationBlocker then
+        NoFishingAnimation.AnimationBlocker:Disconnect()
+        NoFishingAnimation.AnimationBlocker = nil
+    end
+    
+    if NoFishingAnimation.ReelingTrack then
+        NoFishingAnimation.ReelingTrack:Stop()
+        NoFishingAnimation.ReelingTrack = nil
+    end
+    
+    NoFishingAnimation.SavedPose = {}
+end
+
+-- ============================================
+-- PUBLIC FUNCTIONS (untuk GUI)
+-- ============================================
+
+-- Fungsi Start (AUTO - tanpa perlu memancing dulu)
+function NoFishingAnimation.Start()
+    if NoFishingAnimation.Enabled then
+        return false, "Already enabled"
+    end
+    
+    local character = localPlayer.Character
+    if not character then 
+        return false, "Character not found"
+    end
+    
+    -- 1. Cari atau buat ReelingIdle animation
+    local reelingTrack = getOrCreateReelingAnimation()
+    
+    if reelingTrack then
+        -- 2. Play animasi (pause setelah beberapa frame)
+        reelingTrack:Play()
+        reelingTrack:AdjustSpeed(0) -- Pause animasi di frame pertama
+        
+        NoFishingAnimation.ReelingTrack = reelingTrack
+        
+        -- 3. Tunggu animasi apply ke Motor6D
+        task.wait(0.2)
+        
+        -- 4. Capture pose
+        local success = capturePose()
+        
+        if success then
+            -- 5. KILL semua animasi
+            killAllAnimations()
+            
+            -- 6. Block animasi baru
+            blockNewAnimations()
+            
+            -- 7. Enable freeze
+            NoFishingAnimation.Enabled = true
+            freezePose()
+            
+            return true, "Pose frozen successfully"
+        else
+            reelingTrack:Stop()
+            return false, "Failed to capture pose"
+        end
+    else
+        return false, "Reeling animation not found"
+    end
+end
+
+-- Fungsi Start dengan delay (RECOMMENDED)
+function NoFishingAnimation.StartWithDelay(delay, callback)
+    if NoFishingAnimation.Enabled then
+        return false, "Already enabled"
+    end
+    
+    delay = delay or 2
+    
+    -- Jalankan di coroutine agar tidak blocking
+    task.spawn(function()
+        task.wait(delay)
+        
+        local success = capturePose()
+        
+        if success then
+            -- KILL semua animasi
+            killAllAnimations()
+            
+            -- Block animasi baru
+            blockNewAnimations()
+            
+            -- Enable freeze
+            NoFishingAnimation.Enabled = true
+            freezePose()
+            
+            -- Callback jika ada
+            if callback then
+                callback(true, "Pose frozen successfully")
+            end
+        else
+            -- Callback error
+            if callback then
+                callback(false, "Failed to capture pose")
+            end
+        end
+    end)
+    
+    return true, "Starting with delay..."
+end
+
+-- Fungsi Stop
+function NoFishingAnimation.Stop()
+    if not NoFishingAnimation.Enabled then
+        return false, "Already disabled"
+    end
+    
+    NoFishingAnimation.Enabled = false
+    stopFreeze()
+    
+    return true, "Pose unfrozen"
+end
+
+-- Fungsi untuk cek status
+function NoFishingAnimation.IsEnabled()
+    return NoFishingAnimation.Enabled
+end
+
+-- ============================================
+-- EVENT HANDLERS
+-- ============================================
+
+-- Handle respawn
+localPlayer.CharacterAdded:Connect(function(character)
+    if NoFishingAnimation.Enabled then
+        NoFishingAnimation.Enabled = false
+        stopFreeze()
+    end
+end)
+
+-- Cleanup
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+    if player == localPlayer then
+        if NoFishingAnimation.Enabled then
+            NoFishingAnimation.Stop()
+        end
+    end
+end)
+
+return NoFishingAnimation
+end)()
+
+-- Module LockPosition
+CombinedModules.LockPosition = (function()
+-- LockPosition.lua
+local RunService = game:GetService("RunService")
+
+local LockPosition = {}
+LockPosition.Enabled = false
+LockPosition.LockedPos = nil
+LockPosition.Connection = nil
+
+-- Aktifkan Lock Position
+function LockPosition.Start()
+    if LockPosition.Enabled then return end
+    LockPosition.Enabled = true
+
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    LockPosition.LockedPos = hrp.CFrame
+
+    -- Loop untuk menjaga posisi
+    LockPosition.Connection = RunService.Heartbeat:Connect(function()
+        if not LockPosition.Enabled then return end
+
+        local c = player.Character
+        if not c then return end
+        
+        local hrp2 = c:FindFirstChild("HumanoidRootPart")
+        if not hrp2 then return end
+
+        -- Selalu kembalikan ke posisi yang dikunci
+        hrp2.CFrame = LockPosition.LockedPos
+    end)
+
+    print("Lock Position: Activated")
+end
+
+-- Nonaktifkan Lock Position
+function LockPosition.Stop()
+    LockPosition.Enabled = false
+
+    if LockPosition.Connection then
+        LockPosition.Connection:Disconnect()
+        LockPosition.Connection = nil
+    end
+
+    print("Lock Position: Deactivated")
+end
+
+return LockPosition
+end)()
+
+-- Module DisableCutscenes
+CombinedModules.DisableCutscenes = (function()
+--=====================================================
+-- DisableCutscenes.lua (FINAL MODULE VERSION)
+-- Memiliki: Start(), Stop()
+--=====================================================
+
+local DisableCutscenes = {}
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Packages = ReplicatedStorage:WaitForChild("Packages")
+local Index = Packages:WaitForChild("_Index")
+local NetFolder = Index:WaitForChild("sleitnick_net@0.2.0")
+local net = NetFolder:WaitForChild("net")
+
+local ReplicateCutscene = net:FindFirstChild("ReplicateCutscene")
+local StopCutscene = net:FindFirstChild("StopCutscene")
+local BlackoutScreen = net:FindFirstChild("BlackoutScreen")
+
+local running = false
+local _connections = {}
+local _loopThread = nil
+
+local function connect(event, fn)
+    if event then
+        local c = event.OnClientEvent:Connect(fn)
+        table.insert(_connections, c)
+    end
+end
+
+-----------------------------------------------------
+-- START
+-----------------------------------------------------
+function DisableCutscenes.Start()
+    if running then return end
+    running = true
+
+    -- Block ReplicateCutscene
+    connect(ReplicateCutscene, function(...)
+        if running and StopCutscene then
+            StopCutscene:FireServer()
+        end
+    end)
+
+    -- Block BlackoutScreen
+    connect(BlackoutScreen, function(...)
+        -- just ignore
+    end)
+
+    -- Loop paksa StopCutscene tiap 1 detik
+    _loopThread = task.spawn(function()
+        while running do
+            if StopCutscene then
+                StopCutscene:FireServer()
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+-----------------------------------------------------
+-- STOP
+-----------------------------------------------------
+function DisableCutscenes.Stop()
+    if not running then return end
+    running = false
+
+    -- Hapus semua koneksi listener
+    for _, c in ipairs(_connections) do
+        c:Disconnect()
+    end
+
+    _connections = {}
+
+    -- Stop loop
+    if _loopThread then
+        task.cancel(_loopThread)
+        _loopThread = nil
+    end
+end
+
+-----------------------------------------------------
+return DisableCutscenes
+end)()
+
+-- Module DisableExtras
+CombinedModules.DisableExtras = (function()
+-- DisableExtras.lua
+local module = {}
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local VFXFolder = ReplicatedStorage:WaitForChild("VFX")
+
+local activeSmallNotif = false
+local activeSkinEffect = false
+
+-- =========================
+-- Small Notification
+-- =========================
+local function disableNotifications()
+    if not player or not player:FindFirstChild("PlayerGui") then return end
+    local gui = player.PlayerGui
+    local existing = gui:FindFirstChild("Small Notification")
+    if existing then
+        existing:Destroy()
+    end
+end
+
+-- =========================
+-- Skin Effect Dive
+-- =========================
+local function disableDiveEffects()
+    for _, child in pairs(VFXFolder:GetChildren()) do
+        if child.Name:match("Dive$") then
+            child:Destroy()
+        end
+    end
+end
+
+-- =========================
+-- Start / Stop Small Notification
+-- =========================
+function module.StartSmallNotification()
+    if activeSmallNotif then return end
+    activeSmallNotif = true
+
+    -- Loop setiap frame
+    RunService.Heartbeat:Connect(function()
+        if activeSmallNotif then
+            disableNotifications()
+        end
+    end)
+
+    -- Deteksi GUI baru
+    player.PlayerGui.ChildAdded:Connect(function(child)
+        if activeSmallNotif and child.Name == "Small Notification" then
+            child:Destroy()
+        end
+    end)
+end
+
+function module.StopSmallNotification()
+    activeSmallNotif = false
+end
+
+-- =========================
+-- Start / Stop Skin Effect
+-- =========================
+function module.StartSkinEffect()
+    if activeSkinEffect then return end
+    activeSkinEffect = true
+
+    -- Hapus efek yang sudah ada
+    disableDiveEffects()
+
+    -- Loop setiap frame
+    RunService.Heartbeat:Connect(function()
+        if activeSkinEffect then
+            disableDiveEffects()
+        end
+    end)
+
+    -- Pantau child baru di VFX
+    VFXFolder.ChildAdded:Connect(function(child)
+        if activeSkinEffect and child.Name:match("Dive$") then
+            child:Destroy()
+        end
+    end)
+end
+
+function module.StopSkinEffect()
+    activeSkinEffect = false
+end
+
+return module
+end)()
+
+-- Module AutoTotem3X
+CombinedModules.AutoTotem3X = (function()
+-- AUTO TOTEM 3X (CLEAN VERSION - FOR GUI INTEGRATION)
+local AutoTotem3X = {}
+
+local Players = game:GetService("Players")
+local RS = game:GetService("ReplicatedStorage")
+local VirtualUser = game:GetService("VirtualUser")
+local LP = Players.LocalPlayer
+local Net = RS.Packages["_Index"]["sleitnick_net@0.2.0"].net
+local RE_EquipToolFromHotbar = Net["RE/EquipToolFromHotbar"]
+
+-- Settings
+local HOTBAR_SLOT = 2
+local CLICK_COUNT = 5
+local CLICK_DELAY = 0.2
+local TRIANGLE_RADIUS = 58
+local CENTER_OFFSET = Vector3.new(0, 0, -7.25)
+
+local isRunning = false
+
+-- Teleport Function
+local function tp(pos)
+    local char = LP.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if root then
+        root.CFrame = CFrame.new(pos)
+        task.wait(0.5)
+    end
+end
+
+-- Equip Totem
+local function equipTotem()
+    pcall(function()
+        RE_EquipToolFromHotbar:FireServer(HOTBAR_SLOT)
+    end)
+    task.wait(1.5)
+end
+
+-- Auto Click
+local function autoClick()
+    for i = 1, CLICK_COUNT do
+        pcall(function()
+            VirtualUser:Button1Down(Vector2.new(0, 0))
+            task.wait(0.05)
+            VirtualUser:Button1Up(Vector2.new(0, 0))
+        end)
+        task.wait(CLICK_DELAY)
+        
+        local char = LP.Character
+        if char then
+            for _, tool in pairs(char:GetChildren()) do
+                if tool:IsA("Tool") then
+                    pcall(function()
+                        tool:Activate()
+                    end)
+                end
+            end
+        end
+        task.wait(CLICK_DELAY)
+    end
+end
+
+-- Main Function
+function AutoTotem3X.Start()
+    if isRunning then
+        return false
+    end
+    
+    isRunning = true
+    
+    task.spawn(function()
+        local char = LP.Character or LP.CharacterAdded:Wait()
+        local root = char:WaitForChild("HumanoidRootPart")
+        
+        local centerPos = root.Position
+        local adjustedCenter = centerPos + CENTER_OFFSET
+        
+        -- Calculate 3 totem positions (Triangle pattern)
+        local angles = {90, 210, 330}
+        local totemPositions = {}
+        
+        for i, angleDeg in ipairs(angles) do
+            local angleRad = math.rad(angleDeg)
+            local offsetX = TRIANGLE_RADIUS * math.cos(angleRad)
+            local offsetZ = TRIANGLE_RADIUS * math.sin(angleRad)
+            table.insert(totemPositions, adjustedCenter + Vector3.new(offsetX, 0, offsetZ))
+        end
+        
+        -- Place totems
+        for i, pos in ipairs(totemPositions) do
+            if not isRunning then break end
+            
+            tp(pos)
+            equipTotem()
+            autoClick()
+            task.wait(2)
+        end
+        
+        -- Return to start position
+        tp(centerPos)
+        task.wait(1)
+        
+        isRunning = false
+    end)
+    
+    return true
+end
+
+function AutoTotem3X.Stop()
+    isRunning = false
+    return true
+end
+
+function AutoTotem3X.IsRunning()
+    return isRunning
+end
+
+return AutoTotem3X
+end)()
+
+-- Module SkinSwapAnimation
+CombinedModules.SkinSwapAnimation = (function()
+--====================================================--
+-- ⚡ SKIN ANIMATION REPLACER MODULE
+-- Optimized for GUI integration
+--====================================================--
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+
+local Animator = humanoid:FindFirstChildOfClass("Animator")
+if not Animator then
+    Animator = Instance.new("Animator", humanoid)
+end
+
+--====================================================--
+-- 📦 MODULE
+--====================================================--
+
+local SkinAnimation = {}
+
+--====================================================--
+-- 🎨 SKIN DATABASE
+--====================================================--
+
+local SkinDatabase = {
+    ["Eclipse"] = "rbxassetid://107940819382815",
+    ["HolyTrident"] = "rbxassetid://128167068291703",
+    ["SoulScythe"] = "rbxassetid://82259219343456",
+    ["OceanicHarpoon"] = "rbxassetid://76325124055693",
+    ["BinaryEdge"] = "rbxassetid://109653945741202",
+    ["Vanquisher"] = "rbxassetid://93884986836266",
+    ["KrampusScythe"] = "rbxassetid://134934781977605",
+    ["BanHammer"] = "rbxassetid://96285280763544",
+    ["CorruptionEdge"] = "rbxassetid://126613975718573",
+    ["PrincessParasol"] = "rbxassetid://99143072029495"
+}
+
+--====================================================--
+-- 🎬 CORE VARIABLES
+--====================================================--
+
+local CurrentSkin = nil
+local AnimationPool = {}
+local IsEnabled = false
+local POOL_SIZE = 3
+
+local killedTracks = {}
+local replaceCount = 0
+local currentPoolIndex = 1
+
+--====================================================--
+-- 🔄 LOAD ANIMATION POOL
+--====================================================--
+
+local function LoadAnimationPool(skinId)
+    local animId = SkinDatabase[skinId]
+    if not animId then
+        return false
+    end
+    
+    -- Clear old pool
+    for _, track in ipairs(AnimationPool) do
+        pcall(function()
+            track:Stop(0)
+            track:Destroy()
+        end)
+    end
+    AnimationPool = {}
+    
+    -- Create animation
+    local anim = Instance.new("Animation")
+    anim.AnimationId = animId
+    anim.Name = "CUSTOM_SKIN_ANIM"
+    
+    -- Load pool of tracks
+    for i = 1, POOL_SIZE do
+        local track = Animator:LoadAnimation(anim)
+        track.Priority = Enum.AnimationPriority.Action4
+        track.Looped = false
+        track.Name = "SKIN_POOL_" .. i
+        
+        -- Pre-cache
+        task.spawn(function()
+            pcall(function()
+                track:Play(0, 1, 0)
+                task.wait(0.05)
+                track:Stop(0)
+            end)
+        end)
+        
+        table.insert(AnimationPool, track)
+    end
+    
+    currentPoolIndex = 1
+    return true
+end
+
+--====================================================--
+-- 🎯 GET NEXT TRACK
+--====================================================--
+
+local function GetNextTrack()
+    for i = 1, POOL_SIZE do
+        local track = AnimationPool[i]
+        if track and not track.IsPlaying then
+            return track
+        end
+    end
+    
+    currentPoolIndex = currentPoolIndex % POOL_SIZE + 1
+    return AnimationPool[currentPoolIndex]
+end
+
+--====================================================--
+-- 🛡️ DETECTION
+--====================================================--
+
+local function IsFishCaughtAnimation(track)
+    if not track or not track.Animation then return false end
+    
+    local trackName = string.lower(track.Name or "")
+    local animName = string.lower(track.Animation.Name or "")
+    
+    if string.find(trackName, "fishcaught") or 
+       string.find(animName, "fishcaught") or
+       string.find(trackName, "caught") or 
+       string.find(animName, "caught") then
+        return true
+    end
+    
+    return false
+end
+
+--====================================================--
+-- ⚡ INSTANT REPLACE
+--====================================================--
+
+local function InstantReplace(originalTrack)
+    local nextTrack = GetNextTrack()
+    if not nextTrack then return end
+    
+    replaceCount = replaceCount + 1
+    killedTracks[originalTrack] = tick()
+    
+    -- Kill original
+    task.spawn(function()
+        for i = 1, 10 do
+            pcall(function()
+                if originalTrack.IsPlaying then
+                    originalTrack:Stop(0)
+                    originalTrack:AdjustSpeed(0)
+                    originalTrack.TimePosition = 0
+                end
+            end)
+            task.wait()
+        end
+    end)
+    
+    -- Play custom
+    pcall(function()
+        if nextTrack.IsPlaying then
+            nextTrack:Stop(0)
+        end
+        nextTrack:Play(0, 1, 1)
+        nextTrack:AdjustSpeed(1)
+    end)
+    
+    -- Cleanup
+    task.delay(1, function()
+        killedTracks[originalTrack] = nil
+    end)
+end
+
+--====================================================--
+-- 🔥 MONITORING LOOPS
+--====================================================--
+
+-- AnimationPlayed Hook
+humanoid.AnimationPlayed:Connect(function(track)
+    if not IsEnabled then return end
+    
+    if IsFishCaughtAnimation(track) then
+        task.spawn(function()
+            InstantReplace(track)
+        end)
+    end
+end)
+
+-- RenderStepped Monitor
+RunService.RenderStepped:Connect(function()
+    if not IsEnabled then return end
+    
+    local tracks = humanoid:GetPlayingAnimationTracks()
+    
+    for _, track in ipairs(tracks) do
+        if string.find(string.lower(track.Name or ""), "skin_pool") then
+            continue
+        end
+        
+        if killedTracks[track] then
+            if track.IsPlaying then
+                pcall(function()
+                    track:Stop(0)
+                    track:AdjustSpeed(0)
+                end)
+            end
+            continue
+        end
+        
+        if track.IsPlaying and IsFishCaughtAnimation(track) then
+            task.spawn(function()
+                InstantReplace(track)
+            end)
+        end
+    end
+end)
+
+-- Heartbeat Backup
+RunService.Heartbeat:Connect(function()
+    if not IsEnabled then return end
+    
+    local tracks = humanoid:GetPlayingAnimationTracks()
+    
+    for _, track in ipairs(tracks) do
+        if string.find(string.lower(track.Name or ""), "skin_pool") then
+            continue
+        end
+        
+        if killedTracks[track] and track.IsPlaying then
+            pcall(function()
+                track:Stop(0)
+                track:AdjustSpeed(0)
+            end)
+        end
+    end
+end)
+
+-- Stepped Ultra Aggressive
+RunService.Stepped:Connect(function()
+    if not IsEnabled then return end
+    
+    for track, _ in pairs(killedTracks) do
+        if track and track.IsPlaying then
+            pcall(function()
+                track:Stop(0)
+                track:AdjustSpeed(0)
+            end)
+        end
+    end
+end)
+
+--====================================================--
+-- 🔄 RESPAWN HANDLER
+--====================================================--
+
+player.CharacterAdded:Connect(function(newChar)
+    task.wait(1.5)
+    
+    char = newChar
+    humanoid = char:WaitForChild("Humanoid")
+    Animator = humanoid:FindFirstChildOfClass("Animator")
+    if not Animator then
+        Animator = Instance.new("Animator", humanoid)
+    end
+    
+    killedTracks = {}
+    replaceCount = 0
+    
+    if IsEnabled and CurrentSkin then
+        task.wait(0.5)
+        LoadAnimationPool(CurrentSkin)
+    end
+end)
+
+--====================================================--
+-- 📡 PUBLIC API
+--====================================================--
+
+function SkinAnimation.SwitchSkin(skinId)
+    if not SkinDatabase[skinId] then
+        return false
+    end
+    
+    CurrentSkin = skinId
+    
+    if IsEnabled then
+        return LoadAnimationPool(skinId)
+    end
+    
+    return true
+end
+
+function SkinAnimation.Enable()
+    if IsEnabled then
+        return false
+    end
+    
+    if not CurrentSkin then
+        return false
+    end
+    
+    local success = LoadAnimationPool(CurrentSkin)
+    if success then
+        IsEnabled = true
+        killedTracks = {}
+        replaceCount = 0
+        return true
+    end
+    
+    return false
+end
+
+function SkinAnimation.Disable()
+    if not IsEnabled then
+        return false
+    end
+    
+    IsEnabled = false
+    killedTracks = {}
+    replaceCount = 0
+    
+    for _, track in ipairs(AnimationPool) do
+        pcall(function()
+            track:Stop(0)
+        end)
+    end
+    
+    return true
+end
+
+function SkinAnimation.IsEnabled()
+    return IsEnabled
+end
+
+function SkinAnimation.GetCurrentSkin()
+    return CurrentSkin
+end
+
+function SkinAnimation.GetReplaceCount()
+    return replaceCount
+end
+
+--====================================================--
+-- 🚀 RETURN MODULE
+--====================================================--
+
+return SkinAnimation
+end)()
+
+-- Module WalkOnWater
+CombinedModules.WalkOnWater = (function()
+-- ULTRA STABLE WALK ON WATER V3.2 (MODULE EDITION)
+-- AUTO SURFACE LIFT
+-- NO CHAT COMMAND
+-- GUI / TOGGLE FRIENDLY
+-- CLIENT SAFE | RAYCAST ONLY
+
+repeat task.wait() until game:IsLoaded()
+
+----------------------------------------------------------
+-- SERVICES
+----------------------------------------------------------
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+
+----------------------------------------------------------
+-- STATE
+----------------------------------------------------------
+local WalkOnWater = {
+	Enabled = false,
+	Platform = nil,
+	AlignPos = nil,
+	Connection = nil
+}
+
+local PLATFORM_SIZE = 14
+local OFFSET = 3
+local LAST_WATER_Y = nil
+
+----------------------------------------------------------
+-- CHARACTER
+----------------------------------------------------------
+local function GetCharacterReferences()
+	local char = LocalPlayer.Character
+	if not char then return end
+
+	local humanoid = char:FindFirstChildOfClass("Humanoid")
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	if not humanoid or not hrp then return end
+
+	return char, humanoid, hrp
+end
+
+----------------------------------------------------------
+-- FORCE SURFACE LIFT (ANTI STUCK)
+----------------------------------------------------------
+local function ForceSurfaceLift()
+	local _, humanoid, hrp = GetCharacterReferences()
+	if not humanoid or not hrp then return end
+
+	if humanoid:GetState() ~= Enum.HumanoidStateType.Swimming then
+		return
+	end
+
+	for _ = 1, 60 do
+		hrp.Velocity = Vector3.new(0, 80, 0)
+		task.wait(0.03)
+
+		if humanoid:GetState() ~= Enum.HumanoidStateType.Swimming then
+			break
+		end
+	end
+
+	hrp.CFrame = hrp.CFrame + Vector3.new(0, 3, 0)
+end
+
+----------------------------------------------------------
+-- WATER DETECTION (RAYCAST ONLY)
+----------------------------------------------------------
+local function GetWaterHeight()
+	local _, _, hrp = GetCharacterReferences()
+	if not hrp then return LAST_WATER_Y end
+
+	local origin = hrp.Position + Vector3.new(0, 5, 0)
+
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Blacklist
+	params.FilterDescendantsInstances = { LocalPlayer.Character }
+	params.IgnoreWater = false
+
+	local result = Workspace:Raycast(
+		origin,
+		Vector3.new(0, -600, 0),
+		params
+	)
+
+	if result then
+		LAST_WATER_Y = result.Position.Y
+		return LAST_WATER_Y
+	end
+
+	return LAST_WATER_Y
+end
+
+----------------------------------------------------------
+-- PLATFORM
+----------------------------------------------------------
+local function CreatePlatform()
+	if WalkOnWater.Platform then
+		WalkOnWater.Platform:Destroy()
+	end
+
+	local p = Instance.new("Part")
+	p.Size = Vector3.new(PLATFORM_SIZE, 1, PLATFORM_SIZE)
+	p.Anchored = true
+	p.CanCollide = true
+	p.Transparency = 1
+	p.CanQuery = false
+	p.CanTouch = false
+	p.Name = "WaterLockPlatform"
+	p.Parent = Workspace
+
+	WalkOnWater.Platform = p
+end
+
+----------------------------------------------------------
+-- ALIGN POSITION
+----------------------------------------------------------
+local function SetupAlign()
+	local _, _, hrp = GetCharacterReferences()
+	if not hrp then return false end
+
+	if WalkOnWater.AlignPos then
+		WalkOnWater.AlignPos:Destroy()
+	end
+
+	local att = hrp:FindFirstChild("RootAttachment")
+	if not att then
+		att = Instance.new("Attachment")
+		att.Name = "RootAttachment"
+		att.Parent = hrp
+	end
+
+	local ap = Instance.new("AlignPosition")
+	ap.Attachment0 = att
+	ap.MaxForce = math.huge
+	ap.MaxVelocity = math.huge
+	ap.Responsiveness = 200
+	ap.RigidityEnabled = true
+	ap.Parent = hrp
+
+	WalkOnWater.AlignPos = ap
+	return true
+end
+
+----------------------------------------------------------
+-- CLEANUP
+----------------------------------------------------------
+local function Cleanup()
+	if WalkOnWater.Connection then
+		WalkOnWater.Connection:Disconnect()
+		WalkOnWater.Connection = nil
+	end
+
+	if WalkOnWater.AlignPos then
+		WalkOnWater.AlignPos:Destroy()
+		WalkOnWater.AlignPos = nil
+	end
+
+	if WalkOnWater.Platform then
+		WalkOnWater.Platform:Destroy()
+		WalkOnWater.Platform = nil
+	end
+end
+
+----------------------------------------------------------
+-- START
+----------------------------------------------------------
+function WalkOnWater.Start()
+	if WalkOnWater.Enabled then return end
+
+	local char, humanoid, hrp = GetCharacterReferences()
+	if not char or not humanoid or not hrp then return end
+
+	ForceSurfaceLift()
+
+	WalkOnWater.Enabled = true
+	LAST_WATER_Y = nil
+
+	CreatePlatform()
+	if not SetupAlign() then
+		WalkOnWater.Enabled = false
+		Cleanup()
+		return
+	end
+
+	WalkOnWater.Connection = RunService.Heartbeat:Connect(function()
+		if not WalkOnWater.Enabled then return end
+
+		local _, _, currentHRP = GetCharacterReferences()
+		if not currentHRP then return end
+
+		local waterY = GetWaterHeight()
+		if not waterY then return end
+
+		if WalkOnWater.Platform then
+			WalkOnWater.Platform.CFrame = CFrame.new(
+				currentHRP.Position.X,
+				waterY - 0.5,
+				currentHRP.Position.Z
+			)
+		end
+
+		if WalkOnWater.AlignPos then
+			WalkOnWater.AlignPos.Position = Vector3.new(
+				currentHRP.Position.X,
+				waterY + OFFSET,
+				currentHRP.Position.Z
+			)
+		end
+	end)
+end
+
+----------------------------------------------------------
+-- STOP
+----------------------------------------------------------
+function WalkOnWater.Stop()
+	WalkOnWater.Enabled = false
+	Cleanup()
+end
+
+----------------------------------------------------------
+-- RESPAWN SAFE
+----------------------------------------------------------
+LocalPlayer.CharacterAdded:Connect(function()
+	if WalkOnWater.Enabled then
+		task.wait(0.5)
+		Cleanup()
+		WalkOnWater.Enabled = false
+		WalkOnWater.Start()
+	end
+end)
+
+----------------------------------------------------------
+return WalkOnWater
+end)()
+
+-- Module NotificationModule
+CombinedModules.NotificationModule = (function()
+local Notification = {}
+
+function Notification.Send(title, text, duration)
+    duration = duration or 4
+
+    -- Gunakan pcall supaya tidak error di Delta / exploit lain
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = duration
+        })
+    end)
+end
+
+return Notification
+end)()
+
+-- Module GoodPerfectionStable
+CombinedModules.GoodPerfectionStable = (function()
+-- Auto Fish Module untuk Roblox
+-- Module ini dapat diintegrasikan dengan GUI eksternal
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Module Table
+local GoodPerfectionStable = {}
+GoodPerfectionStable.Enabled = false
+
+-- Fungsi untuk menghapus UIGradient
+local function removeUIGradient()
+    local success, err = pcall(function()
+        local playerGui = LocalPlayer:WaitForChild("PlayerGui", 5)
+        if not playerGui then
+            return false
+        end
+        
+        local fishing = playerGui:FindFirstChild("Fishing")
+        if not fishing then
+            return false
+        end
+        
+        local main = fishing:FindFirstChild("Main")
+        if not main then
+            return false
+        end
+        
+        local display = main:FindFirstChild("Display")
+        if not display then
+            return false
+        end
+        
+        local animationBG = display:FindFirstChild("AnimationBG")
+        if not animationBG then
+            return false
+        end
+        
+        local uiGradient = animationBG:FindFirstChild("UIGradient")
+        
+        if uiGradient then
+            uiGradient:Destroy()
+            return true
+        else
+            return true -- Return true karena tujuan tercapai (tidak ada gradient)
+        end
+    end)
+    
+    if not success then
+        return false
+    end
+    
+    return true
+end
+
+-- Fungsi untuk mengaktifkan auto fishing in-game
+local function enableAutoFishing(state)
+    local success, result = pcall(function()
+        -- Path lengkap sesuai dengan yang Anda berikan
+        local packages = ReplicatedStorage:WaitForChild("Packages", 5)
+        if not packages then
+            warn("Packages tidak ditemukan")
+            return false
+        end
+        
+        local index = packages:WaitForChild("_Index", 5)
+        if not index then
+            warn("_Index tidak ditemukan")
+            return false
+        end
+        
+        local sleitnick = index:WaitForChild("sleitnick_net@0.2.0", 5)
+        if not sleitnick then
+            warn("sleitnick_net@0.2.0 tidak ditemukan")
+            return false
+        end
+        
+        local net = sleitnick:WaitForChild("net", 5)
+        if not net then
+            warn("net tidak ditemukan")
+            return false
+        end
+        
+        -- Nama remote adalah "RF/UpdateAutoFishingState" (dengan slash)
+        local updateAutoFishing = net:WaitForChild("RF/UpdateAutoFishingState", 5)
+        if not updateAutoFishing then
+            warn("RF/UpdateAutoFishingState tidak ditemukan")
+            return false
+        end
+        
+        if updateAutoFishing:IsA("RemoteFunction") then
+            local invokeResult = updateAutoFishing:InvokeServer(state)
+            print("Auto Fishing", state and "diaktifkan" or "dinonaktifkan", "- Result:", invokeResult)
+            return true
+        else
+            warn("RF/UpdateAutoFishingState bukan RemoteFunction")
+            return false
+        end
+    end)
+    
+    if not success then
+        warn("Error saat mengaktifkan auto fishing:", result)
+        return false
+    end
+    
+    return result
+end
+
+-- Fungsi Start - Dipanggil saat toggle ON
+function GoodPerfectionStable.Start()
+    print("=== Memulai Auto Fish ===")
+    GoodPerfectionStable.Enabled = true
+    
+    -- Tunggu sebentar untuk memastikan game sudah siap
+    task.wait(0.3)
+    
+    -- Hapus UIGradient
+    print("Menghapus UIGradient...")
+    local gradientRemoved = removeUIGradient()
+    print("UIGradient removed:", gradientRemoved)
+    
+    -- Tunggu sebentar sebelum mengaktifkan auto
+    task.wait(0.5)
+    
+    -- Aktifkan auto fishing in-game
+    print("Mengaktifkan Auto Fishing...")
+    local autoEnabled = enableAutoFishing(true)
+    print("Auto Fishing enabled:", autoEnabled)
+    
+    if autoEnabled then
+        print("✓ Auto Fish berhasil diaktifkan!")
+    else
+        warn("✗ Auto Fish gagal diaktifkan!")
+    end
+    
+    return autoEnabled
+end
+
+-- Fungsi Stop - Dipanggil saat toggle OFF
+function GoodPerfectionStable.Stop()
+    print("=== Menghentikan Auto Fish ===")
+    GoodPerfectionStable.Enabled = false
+    
+    -- Nonaktifkan auto fishing in-game
+    local success = enableAutoFishing(false)
+    
+    if success then
+        print("✓ Auto Fish berhasil dinonaktifkan!")
+    else
+        warn("✗ Auto Fish gagal dinonaktifkan!")
+    end
+    
+    return success
+end
+
+-- Fungsi untuk check status
+function GoodPerfectionStable.IsEnabled()
+    return GoodPerfectionStable.Enabled
+end
+
+-- Export module
+return GoodPerfectionStable
+end)()
+
+-- Module RemoteBuyer
+CombinedModules.RemoteBuyer = (function()
+local RemoteBuyer = {}
+
+local RS = game:GetService("ReplicatedStorage")
+
+-- ==========================================
+-- Remote untuk membeli ROD
+-- ==========================================
+local PurchaseRodRemote =
+    RS.Packages["_Index"]["sleitnick_net@0.2.0"].net["RF/PurchaseFishingRod"]
+
+function RemoteBuyer.BuyRod(id)
+    task.spawn(function()
+        local success, result = pcall(function()
+            return PurchaseRodRemote:InvokeServer(id)
+        end)
+
+        if success then
+            Notify.Send("Buy Rod", "Berhasil membeli rod!", 3)
+        else
+            Notify.Send("Error", "Gagal membeli rod!", 3)
+        end
+    end)
+end
+
+-- ==========================================
+-- Remote untuk membeli BAIT
+-- ==========================================
+local PurchaseBaitRemote =
+    RS.Packages["_Index"]["sleitnick_net@0.2.0"].net["RF/PurchaseBait"]
+
+function RemoteBuyer.BuyBait(id)
+    task.spawn(function()
+        local success, result = pcall(function()
+            return PurchaseBaitRemote:InvokeServer(id)
+        end)
+
+        if success then
+            Notify.Send("Buy Bait", "Berhasil membeli bait!", 3)
+        else
+            Notify.Send("Error", "Gagal membeli bait!", 3)
+        end
+    end)
+end
+
+return RemoteBuyer
+end)()
+
+-- Module MerchantSystem
+CombinedModules.MerchantSystem = (function()
+-- Remote Merchant System (Standalone Version)
+-- Bisa dijalankan via raw link (loadstring + HttpGet)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Merchant UI di PlayerGui
+local MerchantUI = PlayerGui:WaitForChild("Merchant")
+
+-- ==== FUNCTIONS ====
+
+local function OpenMerchant()
+    if MerchantUI then
+        MerchantUI.Enabled = true
+    end
+end
+
+local function CloseMerchant()
+    if MerchantUI then
+        MerchantUI.Enabled = false
+    end
+end
+
+return {
+    Open = OpenMerchant,
+    Close = CloseMerchant
+}
 end)()
 
 return CombinedModules
