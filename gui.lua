@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Duplicatewdwbvcvccc
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -315,13 +315,13 @@ local instant2 = CombinedModules.instant2
 local blatantv1 = CombinedModules.blatantv1
 local UltraBlatant = CombinedModules.UltraBlatant
 local blatantv2 = CombinedModules.blatantv2
-local blatantv2fix = CombinedModules.blatantv2fix
+local blatantv2fix = CombinedModules.BlatantFixedV1
 local NoFishingAnimation = CombinedModules.NoFishingAnimation
 local LockPosition = CombinedModules.LockPosition
 local DisableCutscenes = CombinedModules.DisableCutscenes
 local DisableExtras = CombinedModules.DisableExtras
 local AutoTotem3X = CombinedModules.AutoTotem3X
-local SkinAnimation = CombinedModules.SkinAnimation
+local SkinAnimation = CombinedModules.SkinSwapAnimation
 local WalkOnWater = CombinedModules.WalkOnWater
 local TeleportModule = CombinedModules.TeleportModule
 local TeleportToPlayer = CombinedModules.TeleportToPlayer
@@ -2303,7 +2303,7 @@ end)
 
 -- Event Teleport - FIXED
 local selectedEventName = nil
-local EventTeleport = SecurityLoader.LoadModule("EventTeleportDynamic")
+local EventTeleport = CombinedModules.EventTeleportDynamic
 
 if not EventTeleport then
     EventTeleport = {
