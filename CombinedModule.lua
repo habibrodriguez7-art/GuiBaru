@@ -7443,7 +7443,7 @@ end)
 return WalkOnWater
 end)()
 
-CombinedModules.WalkOnWater = (function()
+CombinedModules.NotificationModule = (function()
 local Notification = {}
 
 function Notification.Send(title, text, duration)
