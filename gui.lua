@@ -305,7 +305,7 @@ end
 -- ============================================
 -- SECURITY LOADER
 -- ============================================
-local SecurityLoader = loadstring(game:HttpGet("https://gitlab.com/akmilia/ngapainom/-/raw/main/omngapainom.lua?ref_type=heads"))()
+local SecurityLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/habibrodriguez7-art/GuiBaru/refs/heads/main/SecurityLoader.lua"))()
 
 -- Load all modules from CombinedModules
 local CombinedModules = SecurityLoader.LoadModule("CombinedModules")
