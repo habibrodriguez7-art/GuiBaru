@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwefcc
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -313,9 +313,10 @@ local CombinedModules = SecurityLoader.LoadModule("CombinedModules")
 local instant = CombinedModules.instant
 local instant2 = CombinedModules.instant2
 local blatantv1 = CombinedModules.blatantv1
+--blatantv2
 local UltraBlatant = CombinedModules.UltraBlatant
-local blatantv2 = CombinedModules.blatantv2
 local blatantv2fix = CombinedModules.BlatantFixedV1
+local blatantv2 = CombinedModules.blatantv2
 local NoFishingAnimation = CombinedModules.NoFishingAnimation
 local LockPosition = CombinedModules.LockPosition
 local DisableCutscenes = CombinedModules.DisableCutscenes
@@ -330,14 +331,14 @@ local AutoSellSystem = CombinedModules.AutoSellSystem
 local MerchantSystem = CombinedModules.MerchantSystem
 local RemoteBuyer = CombinedModules.RemoteBuyer
 local FreecamModule = CombinedModules.FreecamModule
-local UnlimitedZoomModule = CombinedModules.UnlimitedZoomModule
+local UnlimitedZoomModule = CombinedModules.UnlimitedZoom
 local AntiAFK = CombinedModules.AntiAFK
 local UnlockFPS = CombinedModules.UnlockFPS
 local FPSBooster = CombinedModules.FPSBooster
 local AutoBuyWeather = CombinedModules.AutoBuyWeather
 local Notify = CombinedModules.Notify
 local GoodPerfectionStable = CombinedModules.GoodPerfectionStable
-local PingFPSMonitor = CombinedModules.PingFPSMonitor
+local PingFPSMonitor = CombinedModules.PingPanel
 local DisableRendering = CombinedModules.DisableRendering
 local MovementModule = CombinedModules.MovementModule
 local AutoFavorite = CombinedModules.AutoFavorite
@@ -1899,29 +1900,6 @@ end)
 
 makeInput(catUltraBlatant, "Cancel Delay", "UltraBlatant.CancelDelay", 0.1, function(v)
     UltraBlatant.UpdateSettings(nil, v, nil)
-end)
-
--- Fast Auto Fishing Perfect
-local catBlatantV2Alt = makeCategory(mainPage, "Fast auto fishing perfect", "🔥")
-
-makeToggle(catBlatantV2Alt, "Blatant Features", "FastAutoPerfect.Enabled", function(on) 
-    if on then 
-        blatantv2.Start() 
-    else 
-        blatantv2.Stop() 
-    end 
-end)
-
-makeInput(catBlatantV2Alt, "Fishing Delay", "FastAutoPerfect.FishingDelay", 0.05, function(v) 
-    blatantv2.Settings.FishingDelay = v 
-end)
-
-makeInput(catBlatantV2Alt, "Cancel Delay", "FastAutoPerfect.CancelDelay", 0.01, function(v) 
-    blatantv2.Settings.CancelDelay = v 
-end)
-
-makeInput(catBlatantV2Alt, "Timeout Delay", "FastAutoPerfect.TimeoutDelay", 0.8, function(v) 
-    blatantv2.Settings.TimeoutDelay = v 
 end)
 
 -- Support Features
