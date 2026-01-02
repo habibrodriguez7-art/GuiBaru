@@ -1,6 +1,6 @@
 local CombinedModules = {}
 
--- Module instantwdwd
+-- Module instant
 CombinedModules.instant = (function()
     -- ⚡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -3261,605 +3261,392 @@ end
 return SaveLocation
 end)()
 
--- Module AutoQuestModule
-CombinedModules.AutoQuestModule = (function()
--- ============================================
--- AUTO QUEST MODULE - FISH IT (WITH AUTO TELEPORT)
--- ============================================
-
-local AutoQuestModule = {}
+CombinedModules.EventTeleportDynamic = (function()
+    -- EventTeleportDynamic.lua
+-- Optimized version: no lag + proper height offset + smart event detection
+-- Put this file on your raw hosting and call it from GUI via loadstring or require
 
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
-
--- ============================================
--- LOCATION DATA
--- ============================================
-
-AutoQuestModule.Locations = {
-    Ghostfinn = {
-        ["Treasure Room"] = Vector3.new(-3601.568359375, -266.57373046875, -1578.998779296875),
-        ["Sysiphus Statue"] = Vector3.new(-3656.56201171875, -134.5314178466797, -964.3167724609375),
-    },
-    Element = {
-        ["Ancient Jungle"] = Vector3.new(1467.8480224609375, 7.447117328643799, -327.5971984863281),
-        ["Sacred Temple"] = Vector3.new(1476.30810546875, -21.8499755859375, -630.8220825195312),
-    }
-}
-
--- ============================================
--- AUTO TELEPORT SETTINGS
--- ============================================
-
-AutoQuestModule.AutoTeleportActive = false
-AutoQuestModule.AutoTeleportQueue = {}
-AutoQuestModule.LastTeleportTime = 0
-AutoQuestModule.TeleportCooldown = 2 -- Detik antara teleport
-
--- Quest Data
-AutoQuestModule.Quests = {
-    DeepSeaQuest = {
-        Name = "Deep Sea Quest",
-        Reward = "Ghostfinn Rod",
-        Completed = false,
-        LocationSet = "Ghostfinn",
-        Locations = {"Treasure Room", "Sysiphus Statue"},
-        Tasks = {
-            {Name = "Catch 300 Rare/Epic fish in Treasure Room", Current = 0, Required = 300, Location = "Treasure Room"},
-            {Name = "Catch 3 Mythic fish at Sisyphus Statue", Current = 0, Required = 3, Location = "Sysiphus Statue"},
-            {Name = "Catch 1 SECRET fish at Sisyphus Statue", Current = 0, Required = 1, Location = "Sysiphus Statue"},
-            {Name = "Earn 1M Coins", Current = 0, Required = 1000000}
-        }
-    },
-    ElementQuest = {
-        Name = "Element Quest",
-        Reward = "Element Rod",
-        Completed = false,
-        LocationSet = "Element",
-        Locations = {"Ancient Jungle", "Sacred Temple"},
-        Tasks = {
-            {Name = "Own Ghostfinn Rod", Current = 0, Required = 1},
-            {Name = "Catch 1 SECRET fish at Ancient Jungle", Current = 0, Required = 1, Location = "Ancient Jungle"},
-            {Name = "Catch 1 SECRET fish at Sacred Temple", Current = 0, Required = 1, Location = "Sacred Temple"},
-            {Name = "Create 3 Transcended Stones", Current = 0, Required = 3}
-        }
-    }
-}
-
--- ============================================
--- TELEPORT FUNCTION
--- ============================================
-
-function AutoQuestModule.TeleportToLocation(location)
-    if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then
-        return false
-    end
-    
-    local currentTime = tick()
-    if currentTime - AutoQuestModule.LastTeleportTime < AutoQuestModule.TeleportCooldown then
-        return false
-    end
-    
-    if not location then
-        return false
-    end
-    
-    local offsetPos = location + Vector3.new(0, 3, 0)
-    Player.Character.HumanoidRootPart.CFrame = CFrame.new(offsetPos)
-    AutoQuestModule.LastTeleportTime = currentTime
-    
-    return true
-end
-
--- ============================================
--- GET INCOMPLETE TASKS
--- ============================================
-
-function AutoQuestModule.GetIncompleteTaskLocations(questName)
-    local quest = AutoQuestModule.Quests[questName]
-    if not quest then return {} end
-    
-    local incompleteLocations = {}
-    
-    for _, task in ipairs(quest.Tasks) do
-        if task.Location and task.Current < task.Required then
-            if not table.find(incompleteLocations, task.Location) then
-                table.insert(incompleteLocations, task.Location)
-            end
-        end
-    end
-    
-    return incompleteLocations
-end
-
--- ============================================
--- AUTO TELEPORT LOGIC
--- ============================================
-
-function AutoQuestModule.StartAutoTeleport(questName)
-    if AutoQuestModule.AutoTeleportActive then
-        return
-    end
-    
-    local quest = AutoQuestModule.Quests[questName]
-    if not quest then
-        return
-    end
-    
-    AutoQuestModule.AutoTeleportActive = true
-    
-    task.spawn(function()
-        while AutoQuestModule.AutoTeleportActive do
-            task.wait(1)
-            
-            if not AutoQuestModule.AutoTeleportActive then break end
-            
-            AutoQuestModule.DetectQuestCompletion()
-            
-            if quest.Completed then
-                AutoQuestModule.AutoTeleportActive = false
-                break
-            end
-            
-            local incompleteLocations = AutoQuestModule.GetIncompleteTaskLocations(questName)
-            
-            if #incompleteLocations == 0 then
-                AutoQuestModule.AutoTeleportActive = false
-                break
-            end
-            
-            local targetLocation = incompleteLocations[1]
-            local locationSet = quest.LocationSet
-            local coordinates = AutoQuestModule.Locations[locationSet][targetLocation]
-            
-            if coordinates then
-                AutoQuestModule.TeleportToLocation(coordinates)
-            end
-            
-            task.wait(5)
-        end
-    end)
-end
-
-function AutoQuestModule.StopAutoTeleport()
-    if not AutoQuestModule.AutoTeleportActive then
-        return
-    end
-    
-    AutoQuestModule.AutoTeleportActive = false
-end
-
-function AutoQuestModule.ToggleAutoTeleport(questName)
-    if AutoQuestModule.AutoTeleportActive then
-        AutoQuestModule.StopAutoTeleport()
-    else
-        AutoQuestModule.StartAutoTeleport(questName)
-    end
-end
-
--- ============================================
--- MAIN DETECTION FUNCTION
--- ============================================
-
-function AutoQuestModule.DetectQuestCompletion()
-    local currentRod = Player:GetAttribute("FishingRod")
-    
-    if currentRod then
-        if currentRod:find("Ghostfinn") then
-            AutoQuestModule.Quests.DeepSeaQuest.Completed = true
-            for i, task in ipairs(AutoQuestModule.Quests.DeepSeaQuest.Tasks) do
-                task.Current = task.Required
-            end
-            AutoQuestModule.Quests.ElementQuest.Tasks[1].Current = 1
-        end
-        
-        if currentRod:find("Element") then
-            AutoQuestModule.Quests.ElementQuest.Completed = true
-            for i, task in ipairs(AutoQuestModule.Quests.ElementQuest.Tasks) do
-                task.Current = task.Required
-            end
-            AutoQuestModule.Quests.DeepSeaQuest.Completed = true
-            for i, task in ipairs(AutoQuestModule.Quests.DeepSeaQuest.Tasks) do
-                task.Current = task.Required
-            end
-        end
-    end
-    
-    return true
-end
-
--- ============================================
--- GET QUEST INFO
--- ============================================
-
-function AutoQuestModule.GetQuestInfo(questName)
-    AutoQuestModule.DetectQuestCompletion()
-    
-    local quest = AutoQuestModule.Quests[questName]
-    if not quest then return "Quest not found" end
-    
-    local info = quest.Name .. "\n"
-    info = info .. "━━━━━━━━━━━━━━━━━━━━━━\n\n"
-    
-    for i, task in ipairs(quest.Tasks) do
-        local status = task.Current >= task.Required and "✅" or "⏳"
-        local progress = task.Current .. "/" .. task.Required
-        local percentage = math.floor((task.Current / task.Required) * 100)
-        
-        info = info .. status .. " " .. task.Name .. "\n"
-        info = info .. "   " .. progress .. " (" .. percentage .. "%)\n"
-    end
-    
-    return info
-end
-
--- ============================================
--- MANUAL UPDATE (BACKUP)
--- ============================================
-
-function AutoQuestModule.SetTaskProgress(questName, taskIndex, current)
-    local quest = AutoQuestModule.Quests[questName]
-    if not quest or not quest.Tasks[taskIndex] then return false end
-    
-    quest.Tasks[taskIndex].Current = math.min(current, quest.Tasks[taskIndex].Required)
-    
-    local allCompleted = true
-    for _, task in ipairs(quest.Tasks) do
-        if task.Current < task.Required then
-            allCompleted = false
-            break
-        end
-    end
-    quest.Completed = allCompleted
-    
-    return true
-end
-
--- ============================================
--- MONITOR ATTRIBUTE CHANGES
--- ============================================
-
-function AutoQuestModule.StartMonitoring()
-    Player:GetAttributeChangedSignal("FishingRod"):Connect(function()
-        local rod = Player:GetAttribute("FishingRod")
-        AutoQuestModule.DetectQuestCompletion()
-    end)
-end
-
--- ============================================
--- DEBUG FUNCTIONS
--- ============================================
-
-function AutoQuestModule.DebugPrintAll()
-    print("\n╔════════════════════════════════════════╗")
-    print("║       FISH IT QUEST STATUS             ║")
-    print("╚════════════════════════════════════════╝\n")
-    
-    print(AutoQuestModule.GetQuestInfo("DeepSeaQuest"))
-    print("\n")
-    print(AutoQuestModule.GetQuestInfo("ElementQuest"))
-    
-    print("\n╚════════════════════════════════════════╝")
-end
-
-function AutoQuestModule.DebugCheckRod()
-    local currentRod = Player:GetAttribute("FishingRod")
-    print("\n🎣 CURRENT ROD CHECK:")
-    print("   Rod: " .. tostring(currentRod))
-    
-    if currentRod then
-        if currentRod:find("Ghostfinn") then
-            print("   ✅ Has Ghostfinn Rod")
-        end
-        if currentRod:find("Element") then
-            print("   ✅ Has Element Rod")
-        end
-    end
-    print("")
-end
-
--- ============================================
--- ALIASES
--- ============================================
-
-AutoQuestModule.ScanQuestProgress = AutoQuestModule.DetectQuestCompletion
-AutoQuestModule.ScanPlayerData = AutoQuestModule.DetectQuestCompletion
-AutoQuestModule.DebugCheckItems = AutoQuestModule.DebugCheckRod
-AutoQuestModule.SmartDetect = AutoQuestModule.DetectQuestCompletion
-
--- ============================================
--- AUTO INIT
--- ============================================
-
-task.spawn(function()
-    task.wait(2)
-    AutoQuestModule.DetectQuestCompletion()
-    AutoQuestModule.StartMonitoring()
-end)
-
-return AutoQuestModule
-end)()
-
--- Module LeverQuest
-CombinedModules.LeverQuest = (function()
---========================================================--
---       AutoTempleModule (NO YIELD, SAFE FIND VERSION)
---========================================================--
-
-local AutoTemple = {}
-local Run = false
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
-------------------------------------------------------------
--- SAFE FIND SYSTEM (Anti Infinite Yield)
-------------------------------------------------------------
-local function SafeFind(parent, name)
-    if not parent then return nil end
-    return parent:FindFirstChild(name)
-end
+local LocalPlayer = Players.LocalPlayer
 
--- MAIN FOLDERS
-local Shared = SafeFind(ReplicatedStorage, "Shared")
-local Types = SafeFind(Shared, "Types")
-local TempleStateFolder = SafeFind(Types, "TempleState")
-local TempleLeverFolder = SafeFind(TempleStateFolder, "TempleLevers")
+local module = {}
 
--- MAP FOLDER
-local JungleFolder = SafeFind(Workspace, "JUNGLE INTERACTIONS")
+-- =======================
+-- Event coordinate database (copy from game's module)
+-- =======================
+module.Events = {
+    ["Shark Hunt"] = {
+        Vector3.new(1.64999, -1.3500, 2095.72),
+        Vector3.new(1369.94, -1.3500, 930.125),
+        Vector3.new(-1585.5, -1.3500, 1242.87),
+        Vector3.new(-1896.8, -1.3500, 2634.37),
+    },
 
--- Jika folder wajib tidak ada, AutoTemple tetap aman dipanggil (tidak error)
-local LeverTypes = {
-    "Crescent Artifact",
-    "Arrow Artifact",
-    "Diamond Artifact",
-    "Hourglass Diamond Artifact"
+    ["Worm Hunt"] = {
+        Vector3.new(2190.85, -1.3999, 97.5749),
+        Vector3.new(-2450.6, -1.3999, 139.731),
+        Vector3.new(-267.47, -1.3999, 5188.53),
+    },
+
+    ["Megalodon Hunt"] = {
+        Vector3.new(-1076.3, -1.3999, 1676.19),
+        Vector3.new(-1191.8, -1.3999, 3597.30),
+        Vector3.new(412.700, -1.3999, 4134.39),
+    },
+
+    ["Ghost Shark Hunt"] = {
+        Vector3.new(489.558, -1.3500, 25.4060),
+        Vector3.new(-1358.2, -1.3500, 4100.55),
+        Vector3.new(627.859, -1.3500, 3798.08),
+    },
+
+    ["Treasure Hunt"] = nil, -- no static coords
 }
 
-------------------------------------------------------------
--- AMBIL STATUS LEVER DARI ATTRIBUTE ASLI GAME
-------------------------------------------------------------
-local function GetTempleProgress()
-    local result = {}
+-- =======================
+-- Config
+-- =======================
+module.SearchRadius = 25            -- radius (studs) to consider "spawned object at coord"
+module.ScanInterval = 2.0           -- seconds between scans (increased to reduce lag)
+module.HeightOffset = 15            -- studs above detected position to teleport (avoid drowning)
+module.MaxPartsToCheck = 500        -- limit parts checked per scan (anti-lag)
+module.RequireEventSpawned = true   -- only teleport if event object actually detected
+module.CacheValidPosition = true    -- use cached position when available
+module.CacheDuration = 5            -- seconds to trust cached position
+module.TeleportRadius = 50          -- if player within this radius of target, skip teleport (anti-spam)
 
-    if not TempleLeverFolder then
-        -- Kalau tidak ada folder, anggap semua FALSE (biar aman)
-        for _, typeName in ipairs(LeverTypes) do
-            result[typeName] = false
-        end
-        return result
-    end
+-- =======================
+-- Internal state
+-- =======================
+local running = false
+local currentEventName = nil
+local scanCoroutine = nil
+local lastValidPosition = nil       -- cache last known good position
+local lastValidTime = 0             -- when was last valid position found
+local eventDetectedOnce = false     -- track if we ever detected the event spawning
+local cachedParts = {}              -- cache workspace parts to reduce GetDescendants calls
+local lastCacheUpdate = 0
+local cacheUpdateInterval = 5       -- update part cache every 5 seconds
 
-    for _, typeName in ipairs(LeverTypes) do
-        local lever = SafeFind(TempleLeverFolder, typeName)
-        result[typeName] = lever and lever:GetAttribute("Completed") == true
-    end
-
-    return result
+-- ================
+-- Utilities
+-- ================
+local function safeCharacter()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    return char
 end
 
-------------------------------------------------------------
--- CARI LEVER FISIK DI MAP
-------------------------------------------------------------
-local function FindLeverByType(typeName)
-    if not JungleFolder then return nil end
+local function getHRP()
+    local char = LocalPlayer.Character
+    return char and (char:FindFirstChild("HumanoidRootPart"))
+end
 
-    for _, obj in ipairs(JungleFolder:GetChildren()) do
-        if obj.Name == "TempleLever" then
-            local Type = obj:GetAttribute("Type")
-            if Type == typeName then
-                local part = SafeFind(obj, "MovePiece") or obj:FindFirstChildWhichIsA("BasePart")
-                if part then
-                    return obj, part.Position
+-- Update cached parts list (happens infrequently to reduce lag)
+local function updatePartCache()
+    local now = tick()
+    if now - lastCacheUpdate < cacheUpdateInterval then
+        return -- use existing cache
+    end
+    
+    lastCacheUpdate = now
+    cachedParts = {}
+    
+    -- Only cache parts that could be event objects (filter out terrain, player characters, etc)
+    local count = 0
+    for _, inst in ipairs(Workspace:GetDescendants()) do
+        if inst:IsA("BasePart") and inst.Parent and inst.Parent.Name ~= "Terrain" then
+            -- Skip player characters
+            local isPlayerPart = false
+            local ancestor = inst.Parent
+            for i = 1, 3 do -- check up to 3 levels up
+                if ancestor and Players:GetPlayerFromCharacter(ancestor) then
+                    isPlayerPart = true
+                    break
+                end
+                ancestor = ancestor.Parent
+                if not ancestor then break end
+            end
+            
+            if not isPlayerPart then
+                table.insert(cachedParts, inst)
+                count = count + 1
+                if count >= module.MaxPartsToCheck * 2 then
+                    break -- limit initial cache size
                 end
             end
         end
     end
-
-    return nil
 end
 
-------------------------------------------------------------
--- PROGRESS TEXT UNTUK GUI
-------------------------------------------------------------
-function AutoTemple.GetTempleInfoText()
-    local prog = GetTempleProgress()
-    local lines = {}
-
-    for _, typeName in ipairs(LeverTypes) do
-        table.insert(lines, typeName .. " : " .. (prog[typeName] and "✅" or "❌"))
-    end
-
-    return table.concat(lines, "\n")
-end
-
-------------------------------------------------------------
--- TELEPORT DIRECT CFRAME
-------------------------------------------------------------
-local function TeleportTo(pos)
-    local char = LocalPlayer.Character
-    if not char then return end
-
-    local hrp = SafeFind(char, "HumanoidRootPart")
-    if not hrp then return end
-
-    hrp.CFrame = CFrame.new(pos + Vector3.new(0, 3, 0))
-end
-
-------------------------------------------------------------
--- AMBIL LEVER YANG BELUM SELESAI
-------------------------------------------------------------
-local function GetNextLever()
-    local prog = GetTempleProgress()
-
-    for _, typeName in ipairs(LeverTypes) do
-        if not prog[typeName] then
-            local model, pos = FindLeverByType(typeName)
-            if pos then return typeName, pos end
-        end
-    end
-
-    return nil
-end
-
-------------------------------------------------------------
--- START AUTO TEMPLE
-------------------------------------------------------------
-function AutoTemple.Start()
-    if Run then return end
-    Run = true
-
-    task.spawn(function()
-        while Run do
-            local typeName, pos = GetNextLever()
-
-            if not typeName then
-                Run = false
-                break
+-- Optimized: find parts near position using cached list and spatial optimization
+local function findNearbyObject(centerPos, radius)
+    local bestPart = nil
+    local bestDist = math.huge
+    local radiusSq = radius * radius -- use squared distance to avoid sqrt calculations
+    
+    -- Try fast path first: GetPartBoundsInBox (most efficient)
+    if Workspace.GetPartBoundsInBox then
+        local ok, parts = pcall(function()
+            return Workspace:GetPartBoundsInBox(
+                CFrame.new(centerPos), 
+                Vector3.new(radius*2, radius*2, radius*2)
+            )
+        end)
+        
+        if ok and parts and #parts > 0 then
+            for _, p in ipairs(parts) do
+                if p and p:IsA("BasePart") then
+                    -- Quick squared distance check
+                    local offset = p.Position - centerPos
+                    local distSq = offset.X*offset.X + offset.Y*offset.Y + offset.Z*offset.Z
+                    
+                    if distSq <= radiusSq and distSq < bestDist then
+                        bestDist = distSq
+                        bestPart = p
+                    end
+                end
             end
+            return bestPart
+        end
+    end
+    
+    -- Fallback: use cached parts list (much faster than GetDescendants every time)
+    updatePartCache()
+    
+    local checked = 0
+    for _, part in ipairs(cachedParts) do
+        if part and part.Parent then -- ensure part still exists
+            -- Quick squared distance check
+            local offset = part.Position - centerPos
+            local distSq = offset.X*offset.X + offset.Y*offset.Y + offset.Z*offset.Z
+            
+            if distSq <= radiusSq and distSq < bestDist then
+                bestDist = distSq
+                bestPart = part
+            end
+            
+            checked = checked + 1
+            if checked >= module.MaxPartsToCheck then
+                break -- anti-lag: limit checks per scan
+            end
+        end
+    end
+    
+    return bestPart
+end
 
-            TeleportTo(pos)
-            task.wait(1.2)
+-- Smart position resolver with caching
+local function resolveActivePosition(eventName)
+    local coords = module.Events[eventName]
+    if not coords or #coords == 0 then
+        return nil, false
+    end
+    
+    -- Use cached position if still valid (reduces scanning frequency)
+    if module.CacheValidPosition and lastValidPosition then
+        local age = tick() - lastValidTime
+        if age < module.CacheDuration then
+            return lastValidPosition, true -- use cached position
+        end
+    end
+    
+    -- Scan for event spawn (optimized)
+    for _, coord in ipairs(coords) do
+        local part = findNearbyObject(coord, module.SearchRadius)
+        if part then
+            -- EVENT DETECTED! Apply height offset and cache
+            local safePos = part.Position + Vector3.new(0, module.HeightOffset, 0)
+            lastValidPosition = safePos
+            lastValidTime = tick()
+            return safePos, true
+        end
+    end
+    
+    -- No event detected
+    if module.RequireEventSpawned then
+        -- Clear cache if event despawned
+        if lastValidPosition then
+            lastValidPosition = nil
+            lastValidTime = 0
+        end
+        return nil, false
+    else
+        -- Fallback mode: return closest coord with height offset
+        local hrp = getHRP()
+        if hrp then
+            local best = nil
+            local minDistSq = math.huge
+            for _, coord in ipairs(coords) do
+                local offset = hrp.Position - coord
+                local distSq = offset.X*offset.X + offset.Y*offset.Y + offset.Z*offset.Z
+                if distSq < minDistSq then
+                    minDistSq = distSq
+                    best = coord
+                end
+            end
+            if best then
+                return best + Vector3.new(0, module.HeightOffset, 0), false
+            end
+        end
+        return coords[1] + Vector3.new(0, module.HeightOffset, 0), false
+    end
+end
+
+-- Optimized teleport (single operation) with radius check
+local function doTeleportToPos(pos)
+    if not pos then return false end
+    
+    local char = LocalPlayer.Character
+    if not char then return false end
+    
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    
+    -- Check if player is already near target position (anti-spam teleport)
+    local currentPos = hrp.Position
+    local offset = currentPos - pos
+    local distanceSq = offset.X*offset.X + offset.Y*offset.Y + offset.Z*offset.Z
+    local radiusSq = module.TeleportRadius * module.TeleportRadius
+    
+    if distanceSq <= radiusSq then
+        return false -- already near target, skip teleport
+    end
+    
+    -- Single teleport operation (most reliable)
+    local success = pcall(function()
+        hrp.CFrame = CFrame.new(pos)
+    end)
+    
+    return success
+end
+
+-- Exposed simple call: teleport once now to eventName
+function module.TeleportNow(eventName)
+    if not eventName then return false end
+    
+    local ok, pos, isSpawned = pcall(function()
+        return resolveActivePosition(eventName)
+    end)
+    
+    if not ok or not pos then
+        return false
+    end
+    
+    if module.RequireEventSpawned and not isSpawned then
+        return false
+    end
+    
+    return doTeleportToPos(pos)
+end
+
+-- Start auto-teleport loop (optimized, non-blocking)
+function module.Start(eventName)
+    if running then return false end
+    if not eventName or not module.Events[eventName] then return false end
+    
+    running = true
+    currentEventName = eventName
+    eventDetectedOnce = false
+    lastValidPosition = nil
+    lastValidTime = 0
+    
+    -- Non-blocking coroutine loop
+    scanCoroutine = task.spawn(function()
+        while running do
+            -- Wrap in pcall to prevent errors from breaking loop
+            local ok, pos, isSpawned = pcall(function()
+                return resolveActivePosition(currentEventName)
+            end)
+            
+            if ok and pos then
+                if module.RequireEventSpawned then
+                    if isSpawned then
+                        if not eventDetectedOnce then
+                            eventDetectedOnce = true
+                        end
+                        doTeleportToPos(pos)
+                    end
+                else
+                    doTeleportToPos(pos)
+                end
+            end
+            
+            -- Wait before next scan (reduces CPU usage significantly)
+            task.wait(module.ScanInterval)
         end
     end)
+    
+    return true
 end
 
-------------------------------------------------------------
--- STOP AUTO TEMPLE
-------------------------------------------------------------
-function AutoTemple.Stop()
-    Run = false
-end
-
-return AutoTemple
-end)()
-
--- Module TempleDataReader
-CombinedModules.TempleDataReader = (function()
---========================================================--
---        TempleDataReader V3 (AutoScan + UltraFast)
---========================================================--
-
-local TempleDataReader = {}
-
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-
-local Ready = false
-local Listeners = {}
-local Cached = {}
-
-local KEYS = {
-    ["Crescent Artifact"] = {"CrescentArtifact", "Crescent", "Artifact1"},
-    ["Arrow Artifact"] = {"ArrowArtifact", "Arrow", "Artifact2"},
-    ["Diamond Artifact"] = {"DiamondArtifact", "Diamond", "Artifact3"},
-    ["Hourglass Diamond Artifact"] = {"HourglassArtifact", "Hourglass", "Artifact4"},
-}
-
-------------------------------------------------------------
--- Safe Get Attribute in many possible locations
-------------------------------------------------------------
-local function ReadArtifact(mainName, aliases)
-    -- Player attribute
-    for _, k in ipairs(aliases) do
-        local v = Player:GetAttribute(k)
-        if v ~= nil then return v == true or v == 1 end
+function module.Stop()
+    running = false
+    currentEventName = nil
+    eventDetectedOnce = false
+    lastValidPosition = nil
+    lastValidTime = 0
+    cachedParts = {}
+    
+    if scanCoroutine then
+        task.cancel(scanCoroutine)
+        scanCoroutine = nil
     end
+    
+    return true
+end
 
-    -- Character attributes
-    if Player.Character then
-        for _, k in ipairs(aliases) do
-            local v = Player.Character:GetAttribute(k)
-            if v ~= nil then return v == true or v == 1 end
+-- Utility: get event list (names)
+function module.GetEventNames()
+    local list = {}
+    for name, _ in pairs(module.Events) do
+        table.insert(list, name)
+    end
+    table.sort(list)
+    return list
+end
+
+-- Utility: returns whether event has static coords
+function module.HasCoords(eventName)
+    local v = module.Events[eventName]
+    return v ~= nil and #v > 0
+end
+
+-- Utility: check if event is currently spawned (cached result)
+function module.IsEventActive(eventName)
+    if not eventName then return false end
+    
+    -- Quick check using cache
+    if lastValidPosition and currentEventName == eventName then
+        local age = tick() - lastValidTime
+        if age < module.CacheDuration then
+            return true
         end
     end
-
-    -- Folder under Player
-    local folder = Player:FindFirstChild("TempleLevers")
-    if folder then
-        for _, k in ipairs(aliases) do
-            local obj = folder:FindFirstChild(k)
-            if obj and obj.Value ~= nil then return obj.Value == true end
-        end
-    end
-
-    -- ReplicatedStorage fallback
-    local rs = game:GetService("ReplicatedStorage")
-    local gameData = rs:FindFirstChild("GameData")
-    if gameData and gameData:FindFirstChild("Temple") then
-        local t = gameData.Temple
-        for _, k in ipairs(aliases) do
-            local obj = t:FindFirstChild(k)
-            if obj and obj.Value ~= nil then return obj.Value == true end
-        end
-    end
-
-    return false
-end
-
-------------------------------------------------------------
--- Build readable status table
-------------------------------------------------------------
-local function BuildStatus()
-    local data = {}
-    for displayName, aliases in pairs(KEYS) do
-        data[displayName] = ReadArtifact(displayName, aliases)
-    end
-    return data
-end
-
-------------------------------------------------------------
--- Fire callbacks
-------------------------------------------------------------
-local function FireUpdate()
-    local status = BuildStatus()
-    Cached = status
-    for _, fn in ipairs(Listeners) do
-        task.spawn(fn, status)
-    end
-end
-
-------------------------------------------------------------
--- API
-------------------------------------------------------------
-function TempleDataReader.GetTempleStatus()
-    if not Ready then
-        return {}
-    end
-    return Cached
-end
-
-function TempleDataReader.OnTempleUpdate(cb)
-    table.insert(Listeners, cb)
-    if Ready then
-        cb(Cached)
-    end
-end
-
-------------------------------------------------------------
--- Start Scanner
-------------------------------------------------------------
-task.spawn(function()
-    -- Wait until character loaded
-    repeat task.wait() until Player.Character
-
-    Ready = true
-    Cached = BuildStatus()
-    FireUpdate()
-
-    -- Auto monitor attribute changes
-    Player.AttributeChanged:Connect(FireUpdate)
-    Player.CharacterAdded:Connect(function()
-        task.wait(0.5)
-        FireUpdate()
+    
+    -- Full check if needed
+    local ok, pos, isSpawned = pcall(function()
+        return resolveActivePosition(eventName)
     end)
-end)
+    
+    return ok and isSpawned or false
+end
 
-return TempleDataReader
+-- Utility: get performance stats
+function module.GetStats()
+    return {
+        running = running,
+        eventName = currentEventName,
+        eventDetected = eventDetectedOnce,
+        cachedParts = #cachedParts,
+        hasCachedPosition = lastValidPosition ~= nil,
+        cacheAge = lastValidPosition and (tick() - lastValidTime) or 0
+    }
+end
+
+return module
 end)()
 
 -- Module AutoBuyWeather
