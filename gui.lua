@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwefcc
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwefccwwww
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -336,7 +336,7 @@ local AntiAFK = CombinedModules.AntiAFK
 local UnlockFPS = CombinedModules.UnlockFPS
 local FPSBooster = CombinedModules.FPSBooster
 local AutoBuyWeather = CombinedModules.AutoBuyWeather
-local Notify = CombinedModules.Notify
+local Notify = CombinedModules.NotificationModule
 local GoodPerfectionStable = CombinedModules.GoodPerfectionStable
 local PingFPSMonitor = CombinedModules.PingPanel
 local DisableRendering = CombinedModules.DisableRendering
