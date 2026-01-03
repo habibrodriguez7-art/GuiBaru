@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliqsa
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -869,12 +869,12 @@ end
 
 -- Create navigation buttons
 local btnMain = createNavButton("Dashboard", "rbxassetid://86450224791749", "Main", 1) -- Replace with your PNG image ID
-local btnTeleport = createNavButton("Teleport", "rbxassetid://70911100656464", "Teleport", 2) -- Replace with your PNG image ID
-local btnShop = createNavButton("Shop", "rbxassetid://94735138608895", "Shop", 3) -- Replace with your PNG image ID
-local btnWebhook = createNavButton("Webhook", "rbxassetid://100000236745481", "Webhook", 4) -- Replace with your PNG image ID
-local btnCameraView = createNavButton("Camera View", "rbxassetid://88295595018696", "CameraView", 5) -- Replace with your PNG image ID
-local btnSettings = createNavButton("Settings", "rbxassetid://106496415474996", "Settings", 6) -- Replace with your PNG image ID
-local btnInfo = createNavButton("About", "rbxassetid://101112125815838", "Info", 7) -- Replace with your PNG image ID
+local btnTeleport = createNavButton("Teleport", "rbxassetid://78381660144034", "Teleport", 2) -- Replace with your PNG image ID
+local btnShop = createNavButton("Shop", "rbxassetid://103366101391777", "Shop", 3) -- Replace with your PNG image ID
+local btnWebhook = createNavButton("Webhook", "rbxassetid://122775063389583", "Webhook", 4) -- Replace with your PNG image ID
+local btnCameraView = createNavButton("Camera View", "rbxassetid://76857749595149", "CameraView", 5) -- Replace with your PNG image ID
+local btnSettings = createNavButton("Settings", "rbxassetid://99707154377618", "Settings", 6) -- Replace with your PNG image ID
+local btnInfo = createNavButton("About", "rbxassetid://79942787163167", "Info", 7) -- Replace with your PNG image ID
 
 -- Connect buttons
 btnMain.MouseButton1Click:Connect(function() switchPage("Main", "Main Dashboard") end)
