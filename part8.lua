@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwedwd
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwdwdzx
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -477,7 +477,7 @@ local titleIcon = new("ImageLabel",{
     Parent=scriptHeader,
     Image="rbxassetid://102019211120883", -- Replace with your PNG image ID
     Size=UDim2.new(0, 20, 0, 20),
-    Position=UDim2.new(0, 85, 0.5, -10),
+    Position=UDim2.new(0, 70, 0.5, -10),
     BackgroundTransparency=1,
     ImageColor3=colors.primary,
     ZIndex=6
@@ -500,7 +500,7 @@ local subtitleLabel = new("TextLabel",{
     Parent=scriptHeader,
     Text="Free Not For Sale",
     Size=UDim2.new(0, 160, 1, 0),
-    Position=UDim2.new(0, 125, 0, 0),
+    Position=UDim2.new(0, 135, 0, 0),
     BackgroundTransparency=1,
     Font=Enum.Font.GothamBold,
     TextSize=10,
