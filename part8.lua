@@ -475,7 +475,7 @@ local titleLabel = new("TextLabel",{
 -- Icon next to title
 local titleIcon = new("ImageLabel",{
     Parent=scriptHeader,
-    Image="rbxassetid://102019211120883", -- Replace with your PNG image ID
+    Image="rbxassetid://104332967321169", -- Replace with your PNG image ID
     Size=UDim2.new(0, 20, 0, 20),
     Position=UDim2.new(0, 66, 0.5, -10),
     BackgroundTransparency=1,
@@ -1787,7 +1787,7 @@ local fishingDelayValue = 1.30
 local cancelDelayValue = 0.19
 local isInstantFishingEnabled = false
 
-makeDropdown(catAutoFishing, "Instant Fishing Mode", "rbxassetid://102019211120883", {"Fast", "Perfect"}, "InstantFishing.Mode", function(mode)
+makeDropdown(catAutoFishing, "Instant Fishing Mode", "rbxassetid://104332967321169", {"Fast", "Perfect"}, "InstantFishing.Mode", function(mode)
     currentInstantMode = mode
     instant.Stop()
     instant2.Stop()
@@ -2111,7 +2111,7 @@ local skinInfo = {
 makeDropdown(
     catSkin,
     "Select Skin",
-    "rbxassetid://102019211120883",
+    "rbxassetid://104332967321169",
     {
         "Eclipse Katana",
         "Holy Trident", 
@@ -2457,7 +2457,7 @@ end
 
 local SelectedRod = nil
 
-makeDropdown(catRod, "Select Rod", "rbxassetid://102019211120883", RodList, function(displayName)
+makeDropdown(catRod, "Select Rod", "rbxassetid://104332967321169", RodList, function(displayName)
     local rodName = RodMap[displayName]
     SelectedRod = rodName
 
@@ -2507,7 +2507,7 @@ end
 
 local SelectedBait = nil
 
-makeDropdown(catBait, "Select Bait", "rbxassetid://102019211120883", BaitList, function(displayName)
+makeDropdown(catBait, "Select Bait", "rbxassetid://104332967321169", BaitList, function(displayName)
     local baitName = BaitMap[displayName]
     SelectedBait = baitName
 
@@ -2988,7 +2988,7 @@ end)
 -- FPS Unlocker
 local catFPS = makeCategory(settingsPage, "FPS Unlocker", "🎞️")
 
-makeDropdown(catFPS, "Select FPS Limit", "rbxassetid://102019211120883", {"60 FPS", "90 FPS", "120 FPS", "240 FPS"}, function(selected)
+makeDropdown(catFPS, "Select FPS Limit", "rbxassetid://104332967321169", {"60 FPS", "90 FPS", "120 FPS", "240 FPS"}, function(selected)
     local fpsValue = tonumber(selected:match("%d+"))
     if fpsValue and UnlockFPS and UnlockFPS.SetCap then
         UnlockFPS.SetCap(fpsValue)
