@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwdwdaaa
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -793,8 +793,8 @@ local function createNavButton(text, imageId, page, order)
     local iconImage = new("ImageLabel",{
         Parent=btn,
         Image=imageId,
-        Size=UDim2.new(0, 20, 0, 20),
-        Position=UDim2.new(0, 10, 0.5, -10),
+        Size=UDim2.new(0, 16, 0, 16),
+        Position=UDim2.new(0, 10, 0.5, -8),
         BackgroundTransparency=1,
         ImageColor3=page == currentPage and colors.primary or colors.textDim,
         ImageTransparency=page == currentPage and 0 or 0.3,
