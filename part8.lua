@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwedwd
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -477,24 +477,9 @@ local titleIcon = new("ImageLabel",{
     Parent=scriptHeader,
     Image="rbxassetid://102019211120883", -- Replace with your PNG image ID
     Size=UDim2.new(0, 20, 0, 20),
-    Position=UDim2.new(0, 95, 0.5, -10),
+    Position=UDim2.new(0, 85, 0.5, -10),
     BackgroundTransparency=1,
     ImageColor3=colors.primary,
-    ZIndex=6
-})
-
--- Version label - repositioned for better layout
-local versionLabel = new("TextLabel",{
-    Parent=scriptHeader,
-    Text="v2.3",
-    Size=UDim2.new(0, 40, 1, 0),
-    Position=UDim2.new(0, 120, 0, 0),
-    BackgroundTransparency=1,
-    Font=Enum.Font.GothamMedium,
-    TextSize=11,
-    TextColor3=colors.textDim,
-    TextXAlignment=Enum.TextXAlignment.Left,
-    TextTransparency=0.2,
     ZIndex=6
 })
 
@@ -502,7 +487,7 @@ local versionLabel = new("TextLabel",{
 local separator = new("Frame",{
     Parent=scriptHeader,
     Size=UDim2.new(0, 2, 0, 24),
-    Position=UDim2.new(0, 170, 0.5, -12),
+    Position=UDim2.new(0, 115, 0.5, -12),
     BackgroundColor3=colors.primary,
     BackgroundTransparency=0.7,
     BorderSizePixel=0,
@@ -515,7 +500,7 @@ local subtitleLabel = new("TextLabel",{
     Parent=scriptHeader,
     Text="Free Not For Sale",
     Size=UDim2.new(0, 160, 1, 0),
-    Position=UDim2.new(0, 180, 0, 0),
+    Position=UDim2.new(0, 125, 0, 0),
     BackgroundTransparency=1,
     Font=Enum.Font.GothamBold,
     TextSize=10,
