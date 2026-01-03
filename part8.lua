@@ -2199,7 +2199,7 @@ for name, _ in pairs(TeleportModule.Locations) do
 end
 table.sort(locationItems)
 
-makeDropdown(teleportPage, "Teleport to Location", "rbxassetid://77702232992671", locationItems, function(selectedLocation)
+makeDropdown(teleportPage, "Teleport to Location", "rbxassetid://84279757789414", locationItems, function(selectedLocation)
     TeleportModule.TeleportTo(selectedLocation)
 end, "LocationTeleport")
 
@@ -2220,7 +2220,7 @@ local function updatePlayerList()
         playerDropdown:Destroy()
     end
     
-    playerDropdown = makeDropdown(teleportPage, "Teleport to Player", "rbxassetid://123966026484558", playerItems, function(selectedPlayer)
+    playerDropdown = makeDropdown(teleportPage, "Teleport to Player", "rbxassetid://86355568065894", playerItems, function(selectedPlayer)
         TeleportToPlayer.TeleportTo(selectedPlayer)
     end, "PlayerTeleport")
 end
@@ -2290,7 +2290,7 @@ end
 local eventNames = EventTeleport.GetEventNames()
 local catTeleport = makeCategory(teleportPage, "Event Teleport", "🎯")
 
-makeDropdown(catTeleport, "Pilih Event", "rbxassetid://132625203846966", eventNames, function(selected)
+makeDropdown(catTeleport, "Pilih Event", "rbxassetid://84279757789414", eventNames, function(selected)
     selectedEventName = selected
     Notify.Send("Event", "Event dipilih: " .. tostring(selected), 3)
 end, "EventTeleport")
