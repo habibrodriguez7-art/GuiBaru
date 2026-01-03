@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwefccwwww
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -873,7 +873,7 @@ end
 
 -- Create navigation buttons
 local btnMain = createNavButton("Dashboard", "rbxassetid://95277405803431", "Main", 1) -- Replace with your PNG image ID
-local btnTeleport = createNavButton("Teleport", "rbxassetid://82921163545364", "Teleport", 2) -- Replace with your PNG image ID
+local btnTeleport = createNavButton("Teleport", "rbxassetid://70911100656464", "Teleport", 2) -- Replace with your PNG image ID
 local btnShop = createNavButton("Shop", "rbxassetid://94735138608895", "Shop", 3) -- Replace with your PNG image ID
 local btnWebhook = createNavButton("Webhook", "rbxassetid://100000236745481", "Webhook", 4) -- Replace with your PNG image ID
 local btnCameraView = createNavButton("Camera View", "rbxassetid://88295595018696", "CameraView", 5) -- Replace with your PNG image ID
