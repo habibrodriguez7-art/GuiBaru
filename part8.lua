@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwdwdaaa
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliqax
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -477,7 +477,7 @@ local titleIcon = new("ImageLabel",{
     Parent=scriptHeader,
     Image="rbxassetid://102019211120883", -- Replace with your PNG image ID
     Size=UDim2.new(0, 20, 0, 20),
-    Position=UDim2.new(0, 60, 0.5, -10),
+    Position=UDim2.new(0, 66, 0.5, -10),
     BackgroundTransparency=1,
     ImageColor3=colors.primary,
     ZIndex=6
@@ -1155,9 +1155,9 @@ local function makeInput(parent, label, param3, param4, param5)
     RegisterCallback(configPath, callback, "input", defaultValue)
 end
 
--- DROPDOWN - OPTIMIZED
-local function makeDropdown(parent, title, icon, items, param5, param6, param7)
-    -- Detect parameters: makeDropdown(parent, title, icon, items, configPath, onSelect, uniqueId) or makeDropdown(parent, title, icon, items, onSelect, uniqueId)
+-- DROPDOWN - OPTIMIZED WITH PNG ICONS
+local function makeDropdown(parent, title, imageId, items, param5, param6, param7)
+    -- Detect parameters: makeDropdown(parent, title, imageId, items, configPath, onSelect, uniqueId) or makeDropdown(parent, title, imageId, items, onSelect, uniqueId)
     local configPath, onSelect, uniqueId
     if type(param5) == "string" then
         configPath = param5
@@ -1191,15 +1191,13 @@ local function makeDropdown(parent, title, icon, items, param5, param6, param7)
         ZIndex=8
     })
     
-    local iconLabel = new("TextLabel",{
+    local iconImage = new("ImageLabel",{
         Parent=header,
-        Text=icon,
-        Size=UDim2.new(0, 24, 1, 0),
+        Image=imageId,
+        Size=UDim2.new(0, 16, 0, 16),
+        Position=UDim2.new(0, 0, 0.5, -8),
         BackgroundTransparency=1,
-        Font=Enum.Font.GothamBold,
-        TextSize=12,
-        TextColor3=colors.primary,
-        TextXAlignment=Enum.TextXAlignment.Left,
+        ImageColor3=colors.primary,
         ZIndex=9
     })
     
@@ -1207,7 +1205,7 @@ local function makeDropdown(parent, title, icon, items, param5, param6, param7)
         Parent=header,
         Text=title,
         Size=UDim2.new(1, -70, 0, 14),
-        Position=UDim2.new(0, 26, 0, 4),
+        Position=UDim2.new(0, 20, 0, 4),
         BackgroundTransparency=1,
         Font=Enum.Font.GothamBold,
         TextSize=9,
@@ -1789,7 +1787,7 @@ local fishingDelayValue = 1.30
 local cancelDelayValue = 0.19
 local isInstantFishingEnabled = false
 
-makeDropdown(catAutoFishing, "Instant Fishing Mode", "⚡", {"Fast", "Perfect"}, "InstantFishing.Mode", function(mode)
+makeDropdown(catAutoFishing, "Instant Fishing Mode", "rbxassetid://102019211120883", {"Fast", "Perfect"}, "InstantFishing.Mode", function(mode)
     currentInstantMode = mode
     instant.Stop()
     instant2.Stop()
@@ -2113,7 +2111,7 @@ local skinInfo = {
 makeDropdown(
     catSkin,
     "Select Skin",
-    "⚡",
+    "rbxassetid://102019211120883",
     {
         "Eclipse Katana",
         "Holy Trident", 
@@ -2201,7 +2199,7 @@ for name, _ in pairs(TeleportModule.Locations) do
 end
 table.sort(locationItems)
 
-makeDropdown(teleportPage, "Teleport to Location", "📍", locationItems, function(selectedLocation)
+makeDropdown(teleportPage, "Teleport to Location", "rbxassetid://77702232992671", locationItems, function(selectedLocation)
     TeleportModule.TeleportTo(selectedLocation)
 end, "LocationTeleport")
 
@@ -2222,7 +2220,7 @@ local function updatePlayerList()
         playerDropdown:Destroy()
     end
     
-    playerDropdown = makeDropdown(teleportPage, "Teleport to Player", "👤", playerItems, function(selectedPlayer)
+    playerDropdown = makeDropdown(teleportPage, "Teleport to Player", "rbxassetid://123966026484558", playerItems, function(selectedPlayer)
         TeleportToPlayer.TeleportTo(selectedPlayer)
     end, "PlayerTeleport")
 end
@@ -2292,7 +2290,7 @@ end
 local eventNames = EventTeleport.GetEventNames()
 local catTeleport = makeCategory(teleportPage, "Event Teleport", "🎯")
 
-makeDropdown(catTeleport, "Pilih Event", "📌", eventNames, function(selected)
+makeDropdown(catTeleport, "Pilih Event", "rbxassetid://132625203846966", eventNames, function(selected)
     selectedEventName = selected
     Notify.Send("Event", "Event dipilih: " .. tostring(selected), 3)
 end, "EventTeleport")
@@ -2459,7 +2457,7 @@ end
 
 local SelectedRod = nil
 
-makeDropdown(catRod, "Select Rod", "🎣", RodList, function(displayName)
+makeDropdown(catRod, "Select Rod", "rbxassetid://102019211120883", RodList, function(displayName)
     local rodName = RodMap[displayName]
     SelectedRod = rodName
 
@@ -2509,7 +2507,7 @@ end
 
 local SelectedBait = nil
 
-makeDropdown(catBait, "Select Bait", "🪱", BaitList, function(displayName)
+makeDropdown(catBait, "Select Bait", "rbxassetid://102019211120883", BaitList, function(displayName)
     local baitName = BaitMap[displayName]
     SelectedBait = baitName
 
@@ -2990,7 +2988,7 @@ end)
 -- FPS Unlocker
 local catFPS = makeCategory(settingsPage, "FPS Unlocker", "🎞️")
 
-makeDropdown(catFPS, "Select FPS Limit", "⚙️", {"60 FPS", "90 FPS", "120 FPS", "240 FPS"}, function(selected)
+makeDropdown(catFPS, "Select FPS Limit", "rbxassetid://102019211120883", {"60 FPS", "90 FPS", "120 FPS", "240 FPS"}, function(selected)
     local fpsValue = tonumber(selected:match("%d+"))
     if fpsValue and UnlockFPS and UnlockFPS.SetCap then
         UnlockFPS.SetCap(fpsValue)
