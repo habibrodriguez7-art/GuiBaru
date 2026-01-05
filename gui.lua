@@ -1,5 +1,5 @@
 -- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupliwefccwwww
--- FREE NOT FOR SALE
+-- FREE NOT FOR SALEwfw
 
 repeat task.wait() until game:IsLoaded()
 
@@ -321,7 +321,7 @@ local NoFishingAnimation = CombinedModules.NoFishingAnimation
 local LockPosition = CombinedModules.LockPosition
 local DisableCutscenes = CombinedModules.DisableCutscenes
 local DisableExtras = CombinedModules.DisableExtras
-local AutoTotem3X = CombinedModules.AutoTotem3X
+local AutoTotem3X = CombinedModules.AutoTotem3x
 local SkinAnimation = CombinedModules.SkinSwapAnimation
 local WalkOnWater = CombinedModules.WalkOnWater
 local TeleportModule = CombinedModules.TeleportModule
