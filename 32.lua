@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-DupliQS
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-DupliQSawd
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -2344,7 +2344,7 @@ makeDropdown(teleportPage, "Teleport to Location", "rbxassetid://84279757789414"
     TeleportModule.TeleportTo(selectedLocation)
 end, "LocationTeleport")
 
--- Player Teleport with Auto Refresh - OPTIMIZED
+-- Player Teleport with Manual Refresh
 local playerDropdown
 local playerItems = {}
 
@@ -2366,28 +2366,13 @@ local function updatePlayerList()
     end, "PlayerTeleport")
 end
 
+-- Initial update
 updatePlayerList()
 
--- Optimized: Debounce player list updates
-local lastUpdate = 0
-local updateCooldown = 0.5
-
-Players.PlayerAdded:Connect(function(player)
-    local now = tick()
-    if now - lastUpdate < updateCooldown then return end
-    lastUpdate = now
-    
-    task.wait(0.5)
+-- Manual Refresh Button
+makeButton(teleportPage, "Refresh Player List", function()
     updatePlayerList()
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-    local now = tick()
-    if now - lastUpdate < updateCooldown then return end
-    lastUpdate = now
-    
-    task.wait(0.1)
-    updatePlayerList()
+    Notify.Send("Player List", "✓ Refreshed! (" .. #playerItems .. " players)", 2)
 end)
 
 -- Saved Location
