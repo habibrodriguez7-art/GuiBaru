@@ -1,6 +1,6 @@
 local CombinedModules = {}
 
--- Module instant
+-- Module instantaaa
 CombinedModules.instant = (function()
     -- ⚡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -4099,13 +4099,18 @@ end)()
 
 -- Module AutoTotem3x
 CombinedModules.AutoTotem3x = (function()
--- AUTO TOTEM 3X (CLEAN VERSION - FOR GUI INTEGRATION)
+
+-- ========================================
+-- FILE 1: AutoTotem3x.lua (MODULE FILE)
+-- ========================================
 local AutoTotem3X = {}
 
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local VirtualUser = game:GetService("VirtualUser")
 local LP = Players.LocalPlayer
+
+-- Services
 local Net = RS.Packages["_Index"]["sleitnick_net@0.2.0"].net
 local RE_EquipToolFromHotbar = Net["RE/EquipToolFromHotbar"]
 
@@ -4116,7 +4121,9 @@ local CLICK_DELAY = 0.2
 local TRIANGLE_RADIUS = 58
 local CENTER_OFFSET = Vector3.new(0, 0, -7.25)
 
+-- State
 local isRunning = false
+local currentTask = nil
 
 -- Teleport Function
 local function tp(pos)
@@ -4125,20 +4132,25 @@ local function tp(pos)
     if root then
         root.CFrame = CFrame.new(pos)
         task.wait(0.5)
+        return true
     end
+    return false
 end
 
 -- Equip Totem
 local function equipTotem()
-    pcall(function()
+    local success = pcall(function()
         RE_EquipToolFromHotbar:FireServer(HOTBAR_SLOT)
     end)
     task.wait(1.5)
+    return success
 end
 
 -- Auto Click
 local function autoClick()
     for i = 1, CLICK_COUNT do
+        if not isRunning then break end
+        
         pcall(function()
             VirtualUser:Button1Down(Vector2.new(0, 0))
             task.wait(0.05)
@@ -4163,58 +4175,87 @@ end
 -- Main Function
 function AutoTotem3X.Start()
     if isRunning then
-        return false
+        return false, "Auto Totem sudah berjalan"
+    end
+    
+    -- Check if character exists
+    if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then
+        return false, "Character tidak ditemukan"
     end
     
     isRunning = true
     
-    task.spawn(function()
-        local char = LP.Character or LP.CharacterAdded:Wait()
-        local root = char:WaitForChild("HumanoidRootPart")
-        
-        local centerPos = root.Position
-        local adjustedCenter = centerPos + CENTER_OFFSET
-        
-        -- Calculate 3 totem positions (Triangle pattern)
-        local angles = {90, 210, 330}
-        local totemPositions = {}
-        
-        for i, angleDeg in ipairs(angles) do
-            local angleRad = math.rad(angleDeg)
-            local offsetX = TRIANGLE_RADIUS * math.cos(angleRad)
-            local offsetZ = TRIANGLE_RADIUS * math.sin(angleRad)
-            table.insert(totemPositions, adjustedCenter + Vector3.new(offsetX, 0, offsetZ))
-        end
-        
-        -- Place totems
-        for i, pos in ipairs(totemPositions) do
-            if not isRunning then break end
+    currentTask = task.spawn(function()
+        local success, err = pcall(function()
+            local char = LP.Character or LP.CharacterAdded:Wait()
+            local root = char:WaitForChild("HumanoidRootPart")
             
-            tp(pos)
-            equipTotem()
-            autoClick()
-            task.wait(2)
-        end
+            local centerPos = root.Position
+            local adjustedCenter = centerPos + CENTER_OFFSET
+            
+            -- Calculate 3 totem positions (Triangle pattern)
+            local angles = {90, 210, 330}
+            local totemPositions = {}
+            
+            for i, angleDeg in ipairs(angles) do
+                local angleRad = math.rad(angleDeg)
+                local offsetX = TRIANGLE_RADIUS * math.cos(angleRad)
+                local offsetZ = TRIANGLE_RADIUS * math.sin(angleRad)
+                table.insert(totemPositions, adjustedCenter + Vector3.new(offsetX, 0, offsetZ))
+            end
+            
+            -- Place totems
+            for i, pos in ipairs(totemPositions) do
+                if not isRunning then 
+                    break 
+                end
+                
+                print("[AutoTotem3X] Placing totem " .. i .. " of 3")
+                tp(pos)
+                equipTotem()
+                autoClick()
+                task.wait(2)
+            end
+            
+            -- Return to start position
+            if isRunning then
+                tp(centerPos)
+                task.wait(1)
+            end
+        end)
         
-        -- Return to start position
-        tp(centerPos)
-        task.wait(1)
+        if not success then
+            warn("[AutoTotem3X] Error: " .. tostring(err))
+        end
         
         isRunning = false
+        currentTask = nil
+        print("[AutoTotem3X] Process completed")
     end)
     
-    return true
+    return true, "Auto Totem 3X dimulai"
 end
 
 function AutoTotem3X.Stop()
+    if not isRunning then
+        return false, "Auto Totem tidak sedang berjalan"
+    end
+    
     isRunning = false
-    return true
+    
+    if currentTask then
+        task.cancel(currentTask)
+        currentTask = nil
+    end
+    
+    return true, "Auto Totem 3X dihentikan"
 end
 
 function AutoTotem3X.IsRunning()
     return isRunning
 end
 
+-- PENTING: Return module di akhir
 return AutoTotem3X
 end)()
 
