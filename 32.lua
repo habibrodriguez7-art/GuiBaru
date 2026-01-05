@@ -1,4 +1,4 @@
--- LynxGUI_v2.3.lua - Optimized Edition with Anti-Dupli
+-- LynxGUI_v2.3.lua - Optimized Edition with Anti-DupliQS
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -2165,21 +2165,38 @@ makeToggle(catAutoFav, "Enable Auto Favorite", "AutoFavorite.Enabled", function(
     end
 end)
 
--- Auto Totem 3X
+-- Auto Totem 3X Button
 local catAutoTotem = makeCategory(mainPage, "Auto Spawn 3X Totem", "🛠️")
-
 makeButton(catAutoTotem, "Auto Totem 3X", function()
+    -- Validate module
+    if not AutoTotem3X then
+        Notify.Send("Error", "⚠ Module tidak ter-load", 3)
+        warn("[GUI] AutoTotem3X is nil")
+        return
+    end
+    
+    if type(AutoTotem3X.IsRunning) ~= "function" then
+        Notify.Send("Error", "⚠ IsRunning bukan function", 3)
+        warn("[GUI] IsRunning type:", type(AutoTotem3X.IsRunning))
+        return
+    end
+    
+    -- Toggle functionality
     if AutoTotem3X.IsRunning() then
+        print("[GUI] Stopping AutoTotem3X...")
         local success, message = AutoTotem3X.Stop()
         if success then
             Notify.Send("Auto Totem 3X", "⏹ " .. message, 4)
+        else
+            Notify.Send("Auto Totem 3X", "⚠ " .. (message or "Gagal stop"), 3)
         end
     else
+        print("[GUI] Starting AutoTotem3X...")
         local success, message = AutoTotem3X.Start()
         if success then
             Notify.Send("Auto Totem 3X", "▶ " .. message, 4)
         else
-            Notify.Send("Auto Totem 3X", "⚠ " .. message, 3)
+            Notify.Send("Auto Totem 3X", "⚠ " .. (message or "Gagal start"), 3)
         end
     end
 end)
