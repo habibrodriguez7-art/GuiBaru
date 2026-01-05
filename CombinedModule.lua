@@ -1,6 +1,6 @@
 local CombinedModules = {}
 
--- Module instantxaxawdawdsuii
+-- Module instant
 CombinedModules.instant = (function()
     -- ⚡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
