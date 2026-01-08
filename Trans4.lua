@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architecture
+-- Complete rewrite with optimized architecturdwde
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -1995,7 +1995,7 @@ end))
 -- INITIALIZE
 -- ============================================
 win.Size = windowSize
-win.BackgroundTransparency = 0.3
+win.BackgroundTransparency = 0.2
 
 local function InitializeModuleSettings()
     local cfg = ConfigSystem.Get
