@@ -1,8 +1,8 @@
 local CombinedModules = {}
 
--- Module instantaaa
+-- Module instantaaavuiii
 CombinedModules.instant = (function()
-    -- ⚡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
+    -- âš¡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
     local localPlayer = Players.LocalPlayer
@@ -36,7 +36,7 @@ CombinedModules.instant = (function()
         RE_FishCaught = netFolder:WaitForChild("RE/FishCaught", 5)
     end)
 
-    -- ⭐ SAFE CONFIG LOADING - Check if function exists
+    -- â­ SAFE CONFIG LOADING - Check if function exists
     local function safeGetConfig(key, default)
         -- Check if GetConfigValue exists in _G
         if _G.GetConfigValue and type(_G.GetConfigValue) == "function" then
@@ -51,7 +51,7 @@ CombinedModules.instant = (function()
         return default
     end
 
-    -- ⭐ AUTO-LOAD SETTINGS FROM CONFIG (with safety check)
+    -- â­ AUTO-LOAD SETTINGS FROM CONFIG (with safety check)
     local function loadConfigSettings()
         local maxWait = safeGetConfig("InstantFishing.FishingDelay", 1.30)
         local cancelDelay = safeGetConfig("InstantFishing.CancelDelay", 0.19)
@@ -69,7 +69,7 @@ CombinedModules.instant = (function()
         CurrentCycle = 0,
         TotalFish = 0,
         Connections = {},
-        -- ⭐ Settings langsung dari config (dengan safety check)
+        -- â­ Settings langsung dari config (dengan safety check)
         Settings = {
             FishingDelay = 0.01,
             CancelDelay = initialCancelDelay,
@@ -81,7 +81,7 @@ CombinedModules.instant = (function()
 
     _G.FishingScriptFast = fishing
 
-    -- ⭐ Auto-refresh settings setiap kali akan Start (dengan safety check)
+    -- â­ Auto-refresh settings setiap kali akan Start (dengan safety check)
     local function refreshSettings()
         local maxWait = safeGetConfig("InstantFishing.FishingDelay", fishing.Settings.MaxWaitTime)
         local cancelDelay = safeGetConfig("InstantFishing.CancelDelay", fishing.Settings.CancelDelay)
@@ -113,7 +113,7 @@ CombinedModules.instant = (function()
         end)
     end
 
-    -- Fungsi cast (⭐ Menggunakan Settings.MaxWaitTime dan Settings.CancelDelay)
+    -- Fungsi cast (â­ Menggunakan Settings.MaxWaitTime dan Settings.CancelDelay)
     function fishing.Cast()
         if not fishing.Running or fishing.WaitingHook then return end
 
@@ -162,11 +162,11 @@ CombinedModules.instant = (function()
         end
     end
 
-    -- Start (⭐ Auto-refresh settings sebelum start)
+    -- Start (â­ Auto-refresh settings sebelum start)
     function fishing.Start()
         if fishing.Running then return end
         
-        -- ⭐ Refresh settings dari config sebelum start
+        -- â­ Refresh settings dari config sebelum start
         refreshSettings()
         
         fishing.Running = true
@@ -253,7 +253,7 @@ CombinedModules.instant = (function()
         end)
     end
 
-    -- ⭐ Function untuk update settings dari GUI (tetap ada untuk backward compatibility)
+    -- â­ Function untuk update settings dari GUI (tetap ada untuk backward compatibility)
     function fishing.UpdateSettings(maxWaitTime, cancelDelay)
         if maxWaitTime then
             fishing.Settings.MaxWaitTime = maxWaitTime
@@ -268,7 +268,7 @@ end)()
 
 -- Module blatantv1
 CombinedModules.blatantv1 = (function()
-    -- ⚠️ ULTRA BLATANT AUTO FISHING - GUI COMPATIBLE MODULE
+    -- âš ï¸ ULTRA BLATANT AUTO FISHING - GUI COMPATIBLE MODULE
     -- DESIGNED TO WORK WITH EXTERNAL GUI SYSTEM
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
@@ -369,23 +369,23 @@ CombinedModules.blatantv1 = (function()
     -- PUBLIC API (Compatible dengan pattern GUI kamu)
     ----------------------------------------------------------------
 
-    -- ⭐ NEW: Update Settings function
+    -- â­ NEW: Update Settings function
     function UltraBlatant.UpdateSettings(completeDelay, cancelDelay)
         if completeDelay ~= nil then
             UltraBlatant.Settings.CompleteDelay = completeDelay
-            print("✅ UltraBlatant CompleteDelay updated:", completeDelay)
+            print("âœ… UltraBlatant CompleteDelay updated:", completeDelay)
         end
         
         if cancelDelay ~= nil then
             UltraBlatant.Settings.CancelDelay = cancelDelay
-            print("✅ UltraBlatant CancelDelay updated:", cancelDelay)
+            print("âœ… UltraBlatant CancelDelay updated:", cancelDelay)
         end
     end
 
     -- Start function
     function UltraBlatant.Start()
         if UltraBlatant.Active then 
-            print("⚠️ Ultra Blatant already running!")
+            print("âš ï¸ Ultra Blatant already running!")
             return
         end
         
@@ -396,7 +396,7 @@ CombinedModules.blatantv1 = (function()
         task.spawn(ultraSpamLoop)
     end
 
-    -- ⭐ ENHANCED Stop function - Nyalakan auto fishing game
+    -- â­ ENHANCED Stop function - Nyalakan auto fishing game
     function UltraBlatant.Stop()
         if not UltraBlatant.Active then 
             return
@@ -404,7 +404,7 @@ CombinedModules.blatantv1 = (function()
         
         UltraBlatant.Active = false
         
-        -- ⭐ Nyalakan auto fishing game (biarkan tetap nyala)
+        -- â­ Nyalakan auto fishing game (biarkan tetap nyala)
         safeFire(function()
             RF_UpdateAutoFishingState:InvokeServer(true)
         end)
@@ -417,7 +417,7 @@ CombinedModules.blatantv1 = (function()
             RF_CancelFishingInputs:InvokeServer()
         end)
         
-        print("✅ Ultra Blatant stopped - Game auto fishing enabled, can change rod/skin")
+        print("âœ… Ultra Blatant stopped - Game auto fishing enabled, can change rod/skin")
     end
 
     -- Return module
@@ -426,7 +426,7 @@ end)()
 
 -- Module AntiAFK
 CombinedModules.AntiAFK = (function()
-    -- 💤 FungsiKeaby/Misc/AntiAFK.lua
+    -- ðŸ’¤ FungsiKeaby/Misc/AntiAFK.lua
     local VirtualUser = game:GetService("VirtualUser")
     local Players = game:GetService("Players")
     local localPlayer = Players.LocalPlayer
@@ -439,13 +439,13 @@ CombinedModules.AntiAFK = (function()
     function AntiAFK.Start()
         if AntiAFK.Enabled then return end
         AntiAFK.Enabled = true
-        print("🟢 Anti-AFK diaktifkan")
+        print("ðŸŸ¢ Anti-AFK diaktifkan")
 
         AntiAFK.Connection = localPlayer.Idled:Connect(function()
             if AntiAFK.Enabled then
                 VirtualUser:CaptureController()
                 VirtualUser:ClickButton2(Vector2.new())
-                print("💤 [AntiAFK] Mencegah kick karena idle...")
+                print("ðŸ’¤ [AntiAFK] Mencegah kick karena idle...")
             end
         end)
     end
@@ -453,7 +453,7 @@ CombinedModules.AntiAFK = (function()
     function AntiAFK.Stop()
         if not AntiAFK.Enabled then return end
         AntiAFK.Enabled = false
-        print("🔴 Anti-AFK dimatikan")
+        print("ðŸ”´ Anti-AFK dimatikan")
 
         if AntiAFK.Connection then
             AntiAFK.Connection:Disconnect()
@@ -466,7 +466,7 @@ end)()
 
 -- Module UnlockFPS
 CombinedModules.UnlockFPS = (function()
-    -- ⚡ FungsiKeaby/Misc/UnlockFPS.lua
+    -- âš¡ FungsiKeaby/Misc/UnlockFPS.lua
     local UnlockFPS = {
         Enabled = false,
         CurrentCap = 60,
@@ -479,9 +479,9 @@ CombinedModules.UnlockFPS = (function()
         if setfpscap then
             setfpscap(fps)
             UnlockFPS.CurrentCap = fps
-            print(string.format("🎯 [UnlockFPS] FPS cap diatur ke %d", fps))
+            print(string.format("ðŸŽ¯ [UnlockFPS] FPS cap diatur ke %d", fps))
         else
-            warn("⚠️ setfpscap() tidak tersedia di executor kamu.")
+            warn("âš ï¸ setfpscap() tidak tersedia di executor kamu.")
         end
     end
 
@@ -489,7 +489,7 @@ CombinedModules.UnlockFPS = (function()
         if UnlockFPS.Enabled then return end
         UnlockFPS.Enabled = true
         UnlockFPS.SetCap(UnlockFPS.CurrentCap)
-        print(string.format("⚡ [UnlockFPS] Aktif (cap: %d)", UnlockFPS.CurrentCap))
+        print(string.format("âš¡ [UnlockFPS] Aktif (cap: %d)", UnlockFPS.CurrentCap))
     end
 
     function UnlockFPS.Stop()
@@ -497,7 +497,7 @@ CombinedModules.UnlockFPS = (function()
         UnlockFPS.Enabled = false
         if setfpscap then
             setfpscap(60)
-            print("🛑 [UnlockFPS] Dinonaktifkan (kembali ke 60fps)")
+            print("ðŸ›‘ [UnlockFPS] Dinonaktifkan (kembali ke 60fps)")
         end
     end
 
@@ -507,7 +507,7 @@ end)()
 -- Module FPSBooster
 CombinedModules.FPSBooster = (function()
     -- ==============================================================
-    --                ⭐ FPS BOOSTER MODULE (OPTIMIZED) ⭐
+    --                â­ FPS BOOSTER MODULE (OPTIMIZED) â­
     --                    Ready untuk GUI Integration
     -- ==============================================================
 
@@ -768,7 +768,7 @@ end)()
 
 -- Module instant2
 CombinedModules.instant2 = (function()
-    -- ⚡ ULTRA PERFECT CAST AUTO FISHING v35.2 (Safe Config Loading)
+    -- âš¡ ULTRA PERFECT CAST AUTO FISHING v35.2 (Safe Config Loading)
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
     local RunService = game:GetService("RunService")
@@ -803,7 +803,7 @@ CombinedModules.instant2 = (function()
         RE_FishingStopped = netFolder:WaitForChild("RE/FishingStopped", 5)
     end)
 
-    -- ⭐ SAFE CONFIG LOADING - Check if function exists
+    -- â­ SAFE CONFIG LOADING - Check if function exists
     local function safeGetConfig(key, default)
         -- Check if GetConfigValue exists in _G
         if _G.GetConfigValue and type(_G.GetConfigValue) == "function" then
@@ -818,7 +818,7 @@ CombinedModules.instant2 = (function()
         return default
     end
 
-    -- ⭐ SAFE: Load saved settings dari GUI config
+    -- â­ SAFE: Load saved settings dari GUI config
     local function loadSavedSettings()
         local maxWait = safeGetConfig("InstantFishing.FishingDelay", 1.5)
         local cancelDelay = safeGetConfig("InstantFishing.CancelDelay", 0.19)
@@ -842,10 +842,10 @@ CombinedModules.instant2 = (function()
         Connections = {},
         Settings = {
             FishingDelay = 0.07,
-            CancelDelay = savedSettings.CancelDelay,  -- ⭐ Use saved value
+            CancelDelay = savedSettings.CancelDelay,  -- â­ Use saved value
             HookDetectionDelay = 0.03,
             RetryDelay = 0.04,
-            MaxWaitTime = savedSettings.MaxWaitTime,  -- ⭐ Use saved value
+            MaxWaitTime = savedSettings.MaxWaitTime,  -- â­ Use saved value
             FailTimeout = 2.5,
             PerfectChargeTime = 0.34,
             PerfectReleaseDelay = 0.005,
@@ -858,7 +858,7 @@ CombinedModules.instant2 = (function()
 
     _G.FishingScript = fishing
 
-    -- ⭐ Auto-refresh settings setiap kali akan Start (dengan safety check)
+    -- â­ Auto-refresh settings setiap kali akan Start (dengan safety check)
     local function refreshSettings()
         local maxWait = safeGetConfig("InstantFishing.FishingDelay", fishing.Settings.MaxWaitTime)
         local cancelDelay = safeGetConfig("InstantFishing.CancelDelay", fishing.Settings.CancelDelay)
@@ -1025,7 +1025,7 @@ CombinedModules.instant2 = (function()
     function fishing.Start()
         if fishing.Running then return end
         
-        -- ⭐ Refresh settings dari config sebelum start
+        -- â­ Refresh settings dari config sebelum start
         refreshSettings()
         
         fishing.Running = true
@@ -1110,7 +1110,7 @@ CombinedModules.instant2 = (function()
         end)
     end
 
-    -- ⭐ Function untuk update settings dari GUI (tetap ada untuk backward compatibility)
+    -- â­ Function untuk update settings dari GUI (tetap ada untuk backward compatibility)
     function fishing.UpdateSettings(maxWaitTime, cancelDelay)
         if maxWaitTime then
             fishing.Settings.MaxWaitTime = maxWaitTime
@@ -1125,7 +1125,7 @@ end)()
 
 -- Module UltraBlatant
 CombinedModules.UltraBlatant = (function()
-    -- ⚡ ULTRA BLATANT AUTO FISHING MODULE - CLEAN VERSION
+    -- âš¡ ULTRA BLATANT AUTO FISHING MODULE - CLEAN VERSION
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
 
@@ -1460,7 +1460,7 @@ local function DetectDynamicThumbstick()
         dynamicThumbstick = searchForThumbstick(PlayerGui)
         
         if dynamicThumbstick then
-            print("✅ DynamicThumbstick terdeteksi: " .. dynamicThumbstick.Name)
+            print("âœ… DynamicThumbstick terdeteksi: " .. dynamicThumbstick.Name)
             
             -- Hitung center dan radius thumbstick
             local pos = dynamicThumbstick.AbsolutePosition
@@ -1468,8 +1468,8 @@ local function DetectDynamicThumbstick()
             thumbstickCenter = pos + (size / 2)
             thumbstickRadius = math.min(size.X, size.Y) / 2
             
-            print("📍 Thumbstick Center: " .. tostring(thumbstickCenter))
-            print("📏 Thumbstick Radius: " .. thumbstickRadius)
+            print("ðŸ“ Thumbstick Center: " .. tostring(thumbstickCenter))
+            print("ðŸ“ Thumbstick Radius: " .. thumbstickRadius)
         end
     end)
 end
@@ -1728,7 +1728,7 @@ local mainGuiName = nil
 
 function FreecamModule.SetMainGuiName(guiName)
     mainGuiName = guiName
-    print("✅ Main GUI set to: " .. guiName)
+    print("âœ… Main GUI set to: " .. guiName)
 end
 
 function FreecamModule.GetMainGuiName()
@@ -1746,12 +1746,12 @@ function FreecamModule.EnableF3Keybind(enable)
     -- Jika toggle GUI dimatikan, matikan freecam juga
     if not enable and freecam then
         FreecamModule.Stop()
-        print("🔴 Freecam disabled (Toggle GUI OFF)")
+        print("ðŸ”´ Freecam disabled (Toggle GUI OFF)")
     end
     
     if not isMobile then
         local status = f3KeybindActive and "ENABLED (Press F3 to activate)" or "DISABLED"
-        print("⚙️ F3 Keybind: " .. status)
+        print("âš™ï¸ F3 Keybind: " .. status)
     end
 end
 
@@ -1769,9 +1769,9 @@ if not isMobile then
             FreecamModule.Toggle()
             
             if freecam then
-                print("🎥 Freecam ACTIVATED via F3")
+                print("ðŸŽ¥ Freecam ACTIVATED via F3")
             else
-                print("🔴 Freecam DEACTIVATED via F3")
+                print("ðŸ”´ Freecam DEACTIVATED via F3")
             end
         end
     end)
@@ -1816,9 +1816,9 @@ function UnlimitedZoomModule.Enable()
     Player.CameraMinZoomDistance = 0.5
     Player.CameraMaxZoomDistance = 9999
     
-    print("✅ Unlimited Zoom: ENABLED")
-    print("📷 Scroll to zoom in/out without limits")
-    print("🏃 Character can move normally")
+    print("âœ… Unlimited Zoom: ENABLED")
+    print("ðŸ“· Scroll to zoom in/out without limits")
+    print("ðŸƒ Character can move normally")
     
     return true
 end
@@ -1832,8 +1832,8 @@ function UnlimitedZoomModule.Disable()
     Player.CameraMinZoomDistance = originalMinZoom
     Player.CameraMaxZoomDistance = originalMaxZoom
     
-    print("🔴 Unlimited Zoom: DISABLED")
-    print("📷 Zoom limits restored")
+    print("ðŸ”´ Unlimited Zoom: DISABLED")
+    print("ðŸ“· Zoom limits restored")
     
     return true
 end
@@ -2712,7 +2712,7 @@ function PingMonitor:Show()
             end
         end)
         
-        print("✅ Lynx Monitor aktif!")
+        print("âœ… Lynx Monitor aktif!")
     end
 end
 
@@ -2736,7 +2736,7 @@ function PingMonitor:Hide()
             pingUpdateConnection = nil
         end
         
-        print("✅ Lynx Monitor disembunyikan!")
+        print("âœ… Lynx Monitor disembunyikan!")
     end
 end
 
@@ -3037,7 +3037,7 @@ local function send(fish, meta, extra)
                 url = imageUrl
             },
             footer = {
-                text = "Lynxx Webhook • " .. os.date("%m/%d/%Y %H:%M"),
+                text = "Lynxx Webhook â€¢ " .. os.date("%m/%d/%Y %H:%M"),
                 icon_url = "https://i.imgur.com/shnNZuT.png"
             },
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
@@ -3153,7 +3153,7 @@ end)()
 
 -- Module TeleportModule
 CombinedModules.TeleportModule = (function()
--- 🌍 TeleportModule.lua
+-- ðŸŒ TeleportModule.lua
 -- Modul fungsi teleport + daftar lokasi
 
 local TeleportModule = {}
@@ -3188,12 +3188,12 @@ function TeleportModule.TeleportTo(name)
 
     local target = TeleportModule.Locations[name]
     if not target then
-        warn("⚠️ Lokasi '" .. tostring(name) .. "' tidak ditemukan!")
+        warn("âš ï¸ Lokasi '" .. tostring(name) .. "' tidak ditemukan!")
         return
     end
 
     root.CFrame = CFrame.new(target)
-    print("✅ Teleported to:", name)
+    print("âœ… Teleported to:", name)
 end
 
 return TeleportModule
@@ -3216,9 +3216,9 @@ function TeleportToPlayer.TeleportTo(playerName)
 
     if targetHRP and myHRP then
         myHRP.CFrame = targetHRP.CFrame + Vector3.new(0, 3, 0)
-        print("[Teleport] 🚀 Teleported to player: " .. playerName)
+        print("[Teleport] ðŸš€ Teleported to player: " .. playerName)
     else
-        warn("[Teleport] ❌ Gagal teleport, HRP tidak ditemukan.")
+        warn("[Teleport] âŒ Gagal teleport, HRP tidak ditemukan.")
     end
 end
 
@@ -3748,7 +3748,7 @@ local function findSellRemotes()
 				if string.find(name, key) then
 					table.insert(sellRemotes, obj)
 					if string.find(name, "sellall") then
-						print("🎯 Found SellAll Remote:", obj:GetFullName())
+						print("ðŸŽ¯ Found SellAll Remote:", obj:GetFullName())
 						return obj
 					end
 				end
@@ -3759,23 +3759,23 @@ local function findSellRemotes()
 end
 
 function AutoSell.SellOnce()
-	print("💸 Attempting to sell all fish...")
+	print("ðŸ’¸ Attempting to sell all fish...")
 
 	local remote = findSellRemotes()
 	if not remote then
-		warn("❌ Sell remote not found!")
+		warn("âŒ Sell remote not found!")
 		return
 	end
 
 	pcall(function()
 		if remote:IsA("RemoteEvent") then
 			remote:FireServer("all")
-			print("✅ Sold via RemoteEvent:", remote.Name)
+			print("âœ… Sold via RemoteEvent:", remote.Name)
 		elseif remote:IsA("RemoteFunction") then
 			remote:InvokeServer("all")
-			print("✅ Sold via RemoteFunction:", remote.Name)
+			print("âœ… Sold via RemoteFunction:", remote.Name)
 		else
-			warn("⚠️ Invalid remote type for selling")
+			warn("âš ï¸ Invalid remote type for selling")
 		end
 	end)
 end
@@ -4058,7 +4058,7 @@ end
 
 function AutoSellTimer.Start(interval)
 	if AutoSellTimer.Enabled then
-		warn("⚠️ AutoSellTimer sudah aktif!")
+		warn("âš ï¸ AutoSellTimer sudah aktif!")
 		return
 	end
 
@@ -4068,19 +4068,19 @@ function AutoSellTimer.Start(interval)
 
 	local AutoSell = _G.AutoSell
 	if not AutoSell then
-		warn("❌ Modul AutoSell belum dimuat!")
+		warn("âŒ Modul AutoSell belum dimuat!")
 		return
 	end
 
 	AutoSellTimer.Enabled = true
-	print("✅ AutoSellTimer dimulai (" .. AutoSellTimer.Interval .. " detik)")
+	print("âœ… AutoSellTimer dimulai (" .. AutoSellTimer.Interval .. " detik)")
 	Notify("Auto Sell Running", "Auto Sell Berjalan!", 4)
 
 	AutoSellTimer.Thread = task.spawn(function()
 		while AutoSellTimer.Enabled do
 			task.wait(AutoSellTimer.Interval)
 			if AutoSellTimer.Enabled and AutoSell and AutoSell.SellOnce then
-				print("💸 Auto selling (interval " .. AutoSellTimer.Interval .. "s)")
+				print("ðŸ’¸ Auto selling (interval " .. AutoSellTimer.Interval .. "s)")
 				pcall(AutoSell.SellOnce)
 			end
 		end
@@ -4089,28 +4089,28 @@ end
 
 function AutoSellTimer.Stop()
 	if not AutoSellTimer.Enabled then
-		warn("⚠️ AutoSellTimer belum aktif.")
+		warn("âš ï¸ AutoSellTimer belum aktif.")
 		return
 	end
 
 	AutoSellTimer.Enabled = false
-	print("🛑 AutoSellTimer dihentikan.")
+	print("ðŸ›‘ AutoSellTimer dihentikan.")
 	Notify("Auto Sell Stopped", "Auto Sell Berhenti!", 4)
 end
 
 function AutoSellTimer.SetInterval(seconds)
 	if tonumber(seconds) and seconds >= 1 then
 		AutoSellTimer.Interval = tonumber(seconds)
-		print("⏰ Interval auto sell diatur ke " .. seconds .. " detik.")
+		print("â° Interval auto sell diatur ke " .. seconds .. " detik.")
 	else
-		warn("❌ Interval tidak valid, harus >= 1 detik.")
+		warn("âŒ Interval tidak valid, harus >= 1 detik.")
 	end
 end
 
 function AutoSellTimer.GetStatus()
-	print("\n📊 AUTO SELL TIMER STATUS:")
-	print("✅ Enabled:", AutoSellTimer.Enabled)
-	print("⏰ Interval:", AutoSellTimer.Interval .. " detik")
+	print("\nðŸ“Š AUTO SELL TIMER STATUS:")
+	print("âœ… Enabled:", AutoSellTimer.Enabled)
+	print("â° Interval:", AutoSellTimer.Interval .. " detik")
 end
 
 return AutoSellTimer
@@ -4337,12 +4337,12 @@ local function Cast()
     pcall(function()
         -- 1. Charge fishing rod
         RF_ChargeFishingRod:InvokeServer({[22] = tick()})
-        log("🎣 Cast #" .. CurrentCycle)
+        log("ðŸŽ£ Cast #" .. CurrentCycle)
         
         -- 2. Delay minimal lalu request minigame
         task.wait(BlatantAutoFishing.Settings.RequestMinigameDelay)
         RF_RequestMinigame:InvokeServer(9, 0, tick())
-        log("🎯 Minigame requested, waiting hook...")
+        log("ðŸŽ¯ Minigame requested, waiting hook...")
         
         WaitingHook = true
         
@@ -4353,7 +4353,7 @@ local function Cast()
                 
                 -- Force complete
                 RE_FishingCompleted:FireServer()
-                log("⏱️ Timeout - Force complete")
+                log("â±ï¸ Timeout - Force complete")
                 
                 task.wait(BlatantAutoFishing.Settings.CancelDelay)
                 pcall(function() RF_CancelFishingInputs:InvokeServer() end)
@@ -4383,7 +4383,7 @@ local function setupListeners()
             
             -- Complete fishing
             RE_FishingCompleted:FireServer()
-            log("✅ Hook detected - Fish caught!")
+            log("âœ… Hook detected - Fish caught!")
             
             task.wait(BlatantAutoFishing.Settings.CancelDelay)
             pcall(function() RF_CancelFishingInputs:InvokeServer() end)
@@ -4402,7 +4402,7 @@ local function setupListeners()
         WaitingHook = false
         TotalFish = TotalFish + 1
         
-        log("🐟 Fish caught: " .. tostring(fishName) .. " | Total: " .. TotalFish)
+        log("ðŸŸ Fish caught: " .. tostring(fishName) .. " | Total: " .. TotalFish)
         
         task.wait(BlatantAutoFishing.Settings.CancelDelay)
         pcall(function() RF_CancelFishingInputs:InvokeServer() end)
@@ -4415,20 +4415,20 @@ end
 -- Fungsi Start
 function BlatantAutoFishing.Start()
     if BlatantAutoFishing.Enabled then
-        warn("⚠️ Blatant Mode sudah aktif!")
+        warn("âš ï¸ Blatant Mode sudah aktif!")
         return
     end
     
     print("="..string.rep("=", 50))
-    print("🔥 BLATANT MODE AKTIF!")
+    print("ðŸ”¥ BLATANT MODE AKTIF!")
     print("="..string.rep("=", 50))
-    print("⚡ Fishing Delay:", BlatantAutoFishing.Settings.FishingDelay, "s")
-    print("⚡ Cancel Delay:", BlatantAutoFishing.Settings.CancelDelay, "s")
-    print("⚡ Hook Detection Delay:", BlatantAutoFishing.Settings.HookDetectionDelay, "s")
-    print("⚡ Request Minigame Delay:", BlatantAutoFishing.Settings.RequestMinigameDelay, "s")
-    print("⚡ Timeout Delay:", BlatantAutoFishing.Settings.TimeoutDelay, "s")
+    print("âš¡ Fishing Delay:", BlatantAutoFishing.Settings.FishingDelay, "s")
+    print("âš¡ Cancel Delay:", BlatantAutoFishing.Settings.CancelDelay, "s")
+    print("âš¡ Hook Detection Delay:", BlatantAutoFishing.Settings.HookDetectionDelay, "s")
+    print("âš¡ Request Minigame Delay:", BlatantAutoFishing.Settings.RequestMinigameDelay, "s")
+    print("âš¡ Timeout Delay:", BlatantAutoFishing.Settings.TimeoutDelay, "s")
     print("="..string.rep("=", 50))
-    print("⚠️ WARNING: Ultra fast mode - HIGH BAN RISK!")
+    print("âš ï¸ WARNING: Ultra fast mode - HIGH BAN RISK!")
     print("="..string.rep("=", 50))
     
     BlatantAutoFishing.Enabled = true
@@ -4438,19 +4438,19 @@ function BlatantAutoFishing.Start()
     
     -- Setup listeners
     setupListeners()
-    log("✅ Event listeners installed")
+    log("âœ… Event listeners installed")
     
     -- Start fishing
     task.wait(0.5)
     Cast()
     
-    log("✅ Blatant fishing started!")
+    log("âœ… Blatant fishing started!")
 end
 
 -- Fungsi Stop
 function BlatantAutoFishing.Stop()
     if not BlatantAutoFishing.Enabled then
-        warn("⚠️ Blatant Mode sudah tidak aktif!")
+        warn("âš ï¸ Blatant Mode sudah tidak aktif!")
         return
     end
     
@@ -4471,7 +4471,7 @@ function BlatantAutoFishing.Stop()
     -- Cancel current fishing
     pcall(function() RF_CancelFishingInputs:InvokeServer() end)
     
-    log("🔴 Blatant Mode stopped | Total fish: " .. TotalFish)
+    log("ðŸ”´ Blatant Mode stopped | Total fish: " .. TotalFish)
 end
 
 -- Handle respawn
@@ -4479,7 +4479,7 @@ Players.LocalPlayer.CharacterAdded:Connect(function()
     if BlatantAutoFishing.Enabled then
         task.wait(2)
         
-        log("🔄 Character respawned, restarting...")
+        log("ðŸ”„ Character respawned, restarting...")
         
         WaitingHook = false
         
@@ -4508,7 +4508,7 @@ end)()
 
 -- Module BlatantFixedV1
 CombinedModules.BlatantFixedV1 = (function()
--- ⚠️ BLATANT V2 AUTO FISHING - CLEAN VERSION
+-- âš ï¸ BLATANT V2 AUTO FISHING - CLEAN VERSION
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
@@ -4641,7 +4641,7 @@ end)()
 
 -- Module BlatantV2
 CombinedModules.BlatantV2 = (function()
--- ⚡ ULTRA BLATANT AUTO FISHING MODULE - CLEAN VERSION
+-- âš¡ ULTRA BLATANT AUTO FISHING MODULE - CLEAN VERSION
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
@@ -6030,7 +6030,7 @@ end)()
 -- Module SkinSwapAnimation
 CombinedModules.SkinSwapAnimation = (function()
 --====================================================--
--- ⚡ SKIN ANIMATION REPLACER MODULE
+-- âš¡ SKIN ANIMATION REPLACER MODULE
 -- Optimized for GUI integration
 --====================================================--
 
@@ -6046,13 +6046,13 @@ if not Animator then
 end
 
 --====================================================--
--- 📦 MODULE
+-- ðŸ“¦ MODULE
 --====================================================--
 
 local SkinAnimation = {}
 
 --====================================================--
--- 🎨 SKIN DATABASE
+-- ðŸŽ¨ SKIN DATABASE
 --====================================================--
 
 local SkinDatabase = {
@@ -6069,7 +6069,7 @@ local SkinDatabase = {
 }
 
 --====================================================--
--- 🎬 CORE VARIABLES
+-- ðŸŽ¬ CORE VARIABLES
 --====================================================--
 
 local CurrentSkin = nil
@@ -6082,7 +6082,7 @@ local replaceCount = 0
 local currentPoolIndex = 1
 
 --====================================================--
--- 🔄 LOAD ANIMATION POOL
+-- ðŸ”„ LOAD ANIMATION POOL
 --====================================================--
 
 local function LoadAnimationPool(skinId)
@@ -6129,7 +6129,7 @@ local function LoadAnimationPool(skinId)
 end
 
 --====================================================--
--- 🎯 GET NEXT TRACK
+-- ðŸŽ¯ GET NEXT TRACK
 --====================================================--
 
 local function GetNextTrack()
@@ -6145,7 +6145,7 @@ local function GetNextTrack()
 end
 
 --====================================================--
--- 🛡️ DETECTION
+-- ðŸ›¡ï¸ DETECTION
 --====================================================--
 
 local function IsFishCaughtAnimation(track)
@@ -6165,7 +6165,7 @@ local function IsFishCaughtAnimation(track)
 end
 
 --====================================================--
--- ⚡ INSTANT REPLACE
+-- âš¡ INSTANT REPLACE
 --====================================================--
 
 local function InstantReplace(originalTrack)
@@ -6205,7 +6205,7 @@ local function InstantReplace(originalTrack)
 end
 
 --====================================================--
--- 🔥 MONITORING LOOPS
+-- ðŸ”¥ MONITORING LOOPS
 --====================================================--
 
 -- AnimationPlayed Hook
@@ -6283,7 +6283,7 @@ RunService.Stepped:Connect(function()
 end)
 
 --====================================================--
--- 🔄 RESPAWN HANDLER
+-- ðŸ”„ RESPAWN HANDLER
 --====================================================--
 
 player.CharacterAdded:Connect(function(newChar)
@@ -6306,7 +6306,7 @@ player.CharacterAdded:Connect(function(newChar)
 end)
 
 --====================================================--
--- 📡 PUBLIC API
+-- ðŸ“¡ PUBLIC API
 --====================================================--
 
 function SkinAnimation.SwitchSkin(skinId)
@@ -6374,7 +6374,7 @@ function SkinAnimation.GetReplaceCount()
 end
 
 --====================================================--
--- 🚀 RETURN MODULE
+-- ðŸš€ RETURN MODULE
 --====================================================--
 
 return SkinAnimation
@@ -6426,9 +6426,9 @@ local function deleteCanvasGroup()
                     local canvasGroup = display:FindFirstChild("CanvasGroup")
                     if canvasGroup then
                         canvasGroup:Destroy()
-                        print("🚫 CanvasGroup dihapus!")
+                        print("ðŸš« CanvasGroup dihapus!")
                     else
-                        print("⚠️ CanvasGroup tidak ditemukan")
+                        print("âš ï¸ CanvasGroup tidak ditemukan")
                     end
                 end
             end
@@ -6442,14 +6442,14 @@ function GoodPerfectionStable.Start()
     
     deleteCanvasGroup() -- Hapus CanvasGroup
     
-    print("✅ Good/Perfection Stable Mode: ON")
+    print("âœ… Good/Perfection Stable Mode: ON")
 end
 
 -- Fungsi Stop - Dipanggil saat toggle OFF
 function GoodPerfectionStable.Stop()
     GoodPerfectionStable.Enabled = false
     
-    print("❌ Good/Perfection Stable Mode: OFF")
+    print("âŒ Good/Perfection Stable Mode: OFF")
 end
 
 -- Fungsi untuk check status
@@ -6498,8 +6498,9 @@ return {
 end)()
 
 -- Module Auto9xTotem
+-- ðŸ”¥ V3 Engine + Anti-Drown Protection + Totem Selector
 CombinedModules.Auto9xTotem = (function()
-    print("[CombinedModules] Loading Auto9xTotem...")
+    print("[CombinedModules] Loading Auto9xTotem V3...")
     
     -- ========================================
     -- CREATE MODULE TABLE FIRST
@@ -6516,20 +6517,20 @@ CombinedModules.Auto9xTotem = (function()
     -- ========================================
     -- NET PACKAGE & REMOTES (SAFE LOADING)
     -- ========================================
-    local SpawnTotemRemote
-    local clientData
-    local RF_EquipOxygenTank
-    local RF_UnequipOxygenTank
+    local SpawnTotemRemote = nil
+    local clientData = nil
+    local RF_EquipOxygenTank = nil
+    local RF_UnequipOxygenTank = nil
     
     local function InitializeRemotes()
         local success = pcall(function()
-            local Net = ReplicatedStorage:WaitForChild("Packages", 3)
-                :WaitForChild("_Index", 3)
-                :WaitForChild("sleitnick_net@0.2.0", 3)
-                :WaitForChild("net", 3)
-            SpawnTotemRemote = Net:WaitForChild("RE/SpawnTotem", 3)
+            local Net = ReplicatedStorage:WaitForChild("Packages", 5)
+                :WaitForChild("_Index", 5)
+                :WaitForChild("sleitnick_net@0.2.0", 5)
+                :WaitForChild("net", 5)
+            SpawnTotemRemote = Net:WaitForChild("RE/SpawnTotem", 5)
             
-            local Replion = require(ReplicatedStorage:WaitForChild("Packages", 3):WaitForChild("Replion", 3))
+            local Replion = require(ReplicatedStorage:WaitForChild("Packages", 5):WaitForChild("Replion", 5))
             clientData = Replion.Client:WaitReplion("Data")
             
             local RPath = ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage
@@ -6568,12 +6569,15 @@ CombinedModules.Auto9xTotem = (function()
     -- ========================================
     local REF_CENTER = Vector3.new(93.932, 9.532, 2684.134)
     local REF_SPOTS = {
+        -- TENGAH (Y ~ 9.5)
         Vector3.new(45.0468979, 9.51625347, 2730.19067),
         Vector3.new(145.644608, 9.51625347, 2721.90747),
         Vector3.new(84.6406631, 10.2174253, 2636.05786),
+        -- ATAS (Y ~ 109.5)
         Vector3.new(45.0468979, 110.516253, 2730.19067),
         Vector3.new(145.644608, 110.516253, 2721.90747),
         Vector3.new(84.6406631, 111.217425, 2636.05786),
+        -- BAWAH (Y ~ -90.5)
         Vector3.new(45.0468979, -92.483747, 2730.19067),
         Vector3.new(145.644608, -92.483747, 2721.90747),
         Vector3.new(84.6406631, -93.782575, 2636.05786),
@@ -6612,21 +6616,44 @@ CombinedModules.Auto9xTotem = (function()
     local function GetFlyPart()
         local char = Players.LocalPlayer.Character
         if not char then return nil end
-        return char:FindFirstChild("HumanoidRootPart")
+        return char:FindFirstChild("HumanoidRootPart") or 
+               char:FindFirstChild("Torso") or 
+               char:FindFirstChild("UpperTorso")
     end
     
+    -- ========================================
+    -- FLY ENGINE V3 - ANTI-FALL STATE MANAGER
+    -- ========================================
     local function MaintainAntiFallState(enable)
         local char = Players.LocalPlayer.Character
         local hum = char and char:FindFirstChild("Humanoid")
         if not hum then return end
         
         if enable then
-            hum:SetStateEnabled(Enum.HumanoidStateType.Swimming, true)
+            pcall(function()
+                hum:SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Flying, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Landed, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.PlatformStanding, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Running, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.RunningNoPhysics, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.StrafingNoPhysics, false)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+            end)
+            
             if not stateConnection then
                 stateConnection = RunService.Heartbeat:Connect(function()
                     if hum and hum.Parent and Auto9xTotem.Settings.IsRunning then
                         pcall(function()
                             hum:ChangeState(Enum.HumanoidStateType.Swimming)
+                            hum:SetStateEnabled(Enum.HumanoidStateType.Swimming, true)
                         end)
                     end
                 end)
@@ -6636,57 +6663,138 @@ CombinedModules.Auto9xTotem = (function()
                 stateConnection:Disconnect()
                 stateConnection = nil 
             end
+            
+            pcall(function()
+                hum:SetStateEnabled(Enum.HumanoidStateType.Climbing, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Landed, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Physics, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
+                hum:SetStateEnabled(Enum.HumanoidStateType.Running, true)
+                hum:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+            end)
         end
     end
     
+    -- ========================================
+    -- ENABLE FLY PHYSICS V3
+    -- ========================================
     local function EnableV3Physics()
-        local mainPart = GetFlyPart()
         local char = Players.LocalPlayer.Character
         local hum = char and char:FindFirstChild("Humanoid")
+        local mainPart = GetFlyPart()
         
         if not mainPart or not hum then return end
         
-        hum.PlatformStand = true
+        pcall(function()
+            if char:FindFirstChild("Animate") then 
+                char.Animate.Disabled = true 
+            end
+        end)
+        hum.PlatformStand = true 
+        
         MaintainAntiFallState(true)
         
-        local bg = Instance.new("BodyGyro", mainPart)
+        local bg = mainPart:FindFirstChild("FlyGuiGyro") or Instance.new("BodyGyro", mainPart)
         bg.Name = "FlyGuiGyro"
-        bg.P = 9e4
+        bg.P = 9e4 
         bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
         bg.CFrame = mainPart.CFrame
         
-        local bv = Instance.new("BodyVelocity", mainPart)
+        local bv = mainPart:FindFirstChild("FlyGuiVelocity") or Instance.new("BodyVelocity", mainPart)
         bv.Name = "FlyGuiVelocity"
         bv.velocity = Vector3.new(0, 0.1, 0)
         bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        
+        -- Disable collisions
+        task.spawn(function()
+            while Auto9xTotem.Settings.IsRunning and char do
+                for _, part in ipairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") then 
+                        part.CanCollide = false 
+                    end
+                end
+                task.wait(0.1)
+            end
+        end)
+        
+        -- Maintain health
+        task.spawn(function()
+            while Auto9xTotem.Settings.IsRunning and hum do
+                hum.Health = hum.MaxHealth
+                task.wait(1)
+            end
+        end)
     end
     
+    -- ========================================
+    -- DISABLE FLY PHYSICS (SAFE LANDING)
+    -- ========================================
     local function DisableV3Physics()
-        local mainPart = GetFlyPart()
-        if mainPart then
-            local bg = mainPart:FindFirstChild("FlyGuiGyro")
-            local bv = mainPart:FindFirstChild("FlyGuiVelocity")
-            if bg then bg:Destroy() end
-            if bv then bv:Destroy() end
-        end
-        
         local char = Players.LocalPlayer.Character
         local hum = char and char:FindFirstChild("Humanoid")
-        if hum then
-            hum.PlatformStand = false
+        local mainPart = GetFlyPart()
+        
+        if mainPart then
+            pcall(function()
+                if mainPart:FindFirstChild("FlyGuiGyro") then 
+                    mainPart.FlyGuiGyro:Destroy() 
+                end
+                if mainPart:FindFirstChild("FlyGuiVelocity") then 
+                    mainPart.FlyGuiVelocity:Destroy() 
+                end
+                
+                mainPart.Velocity = Vector3.zero
+                mainPart.RotVelocity = Vector3.zero
+                mainPart.AssemblyLinearVelocity = Vector3.zero 
+                mainPart.AssemblyAngularVelocity = Vector3.zero
+                
+                local x, y, z = mainPart.CFrame:ToEulerAnglesYXZ()
+                mainPart.CFrame = CFrame.new(mainPart.Position) * CFrame.fromEulerAnglesYXZ(0, y, 0)
+            end)
         end
         
-        MaintainAntiFallState(false)
+        if hum then 
+            hum.PlatformStand = false 
+            pcall(function() hum:ChangeState(Enum.HumanoidStateType.GettingUp) end)
+        end
+        
+        MaintainAntiFallState(false) 
+        
+        pcall(function()
+            if char and char:FindFirstChild("Animate") then 
+                char.Animate.Disabled = false 
+            end
+        end)
+        
+        if char then
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then 
+                    part.CanCollide = true 
+                end
+            end
+        end
     end
     
+    -- ========================================
+    -- HOLD POSITION
+    -- ========================================
     local function HoldPosition(targetCFrame)
-        if holdConnection then holdConnection:Disconnect() end
+        local mainPart = GetFlyPart()
+        if not mainPart then return end
+        
+        if holdConnection then
+            holdConnection:Disconnect()
+            holdConnection = nil
+        end
         
         holdConnection = RunService.Heartbeat:Connect(function()
-            local mainPart = GetFlyPart()
-            if mainPart then
+            if mainPart and mainPart.Parent then
                 mainPart.CFrame = targetCFrame
-                mainPart.Velocity = Vector3.zero
+                mainPart.Velocity = Vector3.new(0, 0, 0)
+                mainPart.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
             end
         end)
     end
@@ -6698,63 +6806,103 @@ CombinedModules.Auto9xTotem = (function()
         end
     end
     
+    -- ========================================
+    -- FLY TO TARGET POSITION
+    -- ========================================
     local function FlyPhysicsTo(targetPos)
         local mainPart = GetFlyPart()
         if not mainPart then return end
         
+        local bv = mainPart:FindFirstChild("FlyGuiVelocity")
+        local bg = mainPart:FindFirstChild("FlyGuiGyro")
+        
+        if not bv or not bg then 
+            EnableV3Physics()
+            bv = mainPart:FindFirstChild("FlyGuiVelocity")
+            bg = mainPart:FindFirstChild("FlyGuiGyro")
+        end
+        
+        if not bv or not bg then return end
+        
+        local SPEED = 80 
+        
         while Auto9xTotem.Settings.IsRunning do
-            local dist = (targetPos - mainPart.Position).Magnitude
-            if dist < 1 then break end
+            local currentPos = mainPart.Position
+            local diff = targetPos - currentPos
+            local dist = diff.Magnitude
             
-            local dir = (targetPos - mainPart.Position).Unit
-            mainPart.CFrame = mainPart.CFrame + dir * math.min(dist, 5)
-            task.wait()
+            bg.CFrame = CFrame.lookAt(currentPos, targetPos)
+            
+            if dist < 1.0 then 
+                bv.velocity = Vector3.new(0, 0.1, 0)
+                break
+            else
+                bv.velocity = diff.Unit * SPEED
+            end
+            RunService.Heartbeat:Wait()
         end
     end
     
+    -- ========================================
+    -- 9 TOTEM FORMATION LOOP
+    -- ========================================
     local function Run9TotemLoop()
         if AUTO_9_TOTEM_THREAD then 
-            task.cancel(AUTO_9_TOTEM_THREAD) 
+            pcall(function() task.cancel(AUTO_9_TOTEM_THREAD) end)
         end
         
         AUTO_9_TOTEM_THREAD = task.spawn(function()
-            local totemUUIDs = GetTotemUUIDsByName(Auto9xTotem.Settings.SelectedTotem)
-            if #totemUUIDs < 9 then
-                warn("[Auto9xTotem] Need 9 totems, found: " .. #totemUUIDs)
+            local selectedTotemName = Auto9xTotem.Settings.SelectedTotem
+            
+            -- GET TOTEM UUIDs
+            local totemUUIDs = GetTotemUUIDsByName(selectedTotemName)
+            if #totemUUIDs < 9 then 
+                warn(string.format("[Auto9xTotem] Need 9x %s! Found: %d", selectedTotemName, #totemUUIDs))
                 Auto9xTotem.Settings.IsRunning = false
-                return
+                return 
             end
             
             local char = Players.LocalPlayer.Character
             local hrp = char and char:FindFirstChild("HumanoidRootPart")
-            if not hrp then
+            local hum = char and char:FindFirstChild("Humanoid")
+            
+            if not hrp then 
                 Auto9xTotem.Settings.IsRunning = false
-                return
+                return 
             end
             
-            local startPos = hrp.CFrame
+            local startPosition = hrp.CFrame
+            print("[Auto9xTotem] Starting V3 Engine...")
+            print("[Auto9xTotem] Selected Totem: " .. selectedTotemName)
             
+            -- Equip oxygen tank
             if RF_EquipOxygenTank then
                 pcall(function() RF_EquipOxygenTank:InvokeServer(105) end)
             end
             
+            -- Full health
+            if hum then hum.Health = hum.MaxHealth end
+            
             EnableV3Physics()
             task.wait(0.5)
             
+            print("ðŸš€ AUTO PLACE 9 TOTEMS - Type: " .. selectedTotemName)
+            
+            -- Loop through all 9 spots
             for i, refSpot in ipairs(REF_SPOTS) do
                 if not Auto9xTotem.Settings.IsRunning then break end
                 
                 local relativePos = refSpot - REF_CENTER
-                local targetPos = startPos.Position + relativePos
+                local targetPos = startPosition.Position + relativePos
+                local targetCFrame = CFrame.new(targetPos)
                 
-                FlyPhysicsTo(targetPos)
-                HoldPosition(CFrame.new(targetPos))
+                FlyPhysicsTo(targetPos) 
+                HoldPosition(targetCFrame)
                 task.wait(1.5)
                 
-                if SpawnTotemRemote and totemUUIDs[i] then
-                    pcall(function()
-                        SpawnTotemRemote:FireServer(totemUUIDs[i])
-                    end)
+                local uuid = totemUUIDs[i]
+                if uuid and SpawnTotemRemote then
+                    pcall(function() SpawnTotemRemote:FireServer(uuid) end)
                     task.wait(2.5)
                 end
                 
@@ -6762,20 +6910,23 @@ CombinedModules.Auto9xTotem = (function()
                 task.wait(0.3)
             end
             
+            -- Return to start
             if Auto9xTotem.Settings.IsRunning then
-                FlyPhysicsTo(startPos.Position)
-                HoldPosition(startPos)
+                FlyPhysicsTo(startPosition.Position)
+                HoldPosition(startPosition)
                 task.wait(1)
             end
             
+            -- Cleanup
             StopHold()
             
             if RF_UnequipOxygenTank then
                 pcall(function() RF_UnequipOxygenTank:InvokeServer() end)
             end
             
-            DisableV3Physics()
+            DisableV3Physics() 
             Auto9xTotem.Settings.IsRunning = false
+            print("[Auto9xTotem] Formation complete!")
         end)
     end
     
@@ -6817,7 +6968,7 @@ CombinedModules.Auto9xTotem = (function()
         Auto9xTotem.Settings.IsRunning = false
         
         if AUTO_9_TOTEM_THREAD then
-            task.cancel(AUTO_9_TOTEM_THREAD)
+            pcall(function() task.cancel(AUTO_9_TOTEM_THREAD) end)
         end
         
         DisableV3Physics()
@@ -6842,7 +6993,7 @@ CombinedModules.Auto9xTotem = (function()
         InitializeRemotes()
     end)
     
-    print("[CombinedModules] Auto9xTotem loaded successfully")
+    print("[CombinedModules] Auto9xTotem V3 loaded successfully")
     return Auto9xTotem
 
 end)()
