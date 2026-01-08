@@ -256,6 +256,7 @@ local MovementModule = CombinedModules.MovementModule
 local AutoFavorite = CombinedModules.AutoFavorite
 local WebhookModule = CombinedModules.Webhook
 local HideStats = CombinedModules.HideStats
+local Auto9xTotem = CombinedModules.Auto9xTotem
 local EventTeleport = CombinedModules.EventTeleportDynamic or {
     GetEventNames = function() return {"- Module Not Loaded -"} end,
     HasCoords = function() return false end,
@@ -1398,6 +1399,27 @@ makeButton(catAutoTotem, "Auto Totem 3X", function()
         if AutoTotem3X.IsRunning() then AutoTotem3X.Stop() else AutoTotem3X.Start() end
     end
 end)
+
+-- Di Main Page GUI Anda, setelah Auto Totem 3X
+local catAuto9xTotem = makeCategory(mainPage, "Auto Spawn 9X Totem [BETA]")
+local currentTotem9x = "Luck Totem"
+local is9xTotemRunning = false
+
+if Auto9xTotem then
+    makeDropdown(catAuto9xTotem, "Select Totem Type", "rbxassetid://104332967321169", Auto9xTotem.GetTotemNames(), "Auto9xTotem.SelectedTotem", function(selected)
+        currentTotem9x = selected
+        Auto9xTotem.SetTotem(selected)
+    end, "Auto9xTotemDropdown")
+    
+    makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
+        is9xTotemRunning = on
+        if on then
+            Auto9xTotem.Start()
+        else
+            Auto9xTotem.Stop()
+        end
+    end)
+end
 
 -- Skin Animation
 local catSkin = makeCategory(mainPage, "Skin Animation")
