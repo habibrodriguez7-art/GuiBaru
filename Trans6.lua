@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architecturefxc
+-- Complete rewrite with optimized architectur
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -223,6 +223,17 @@ CurrentConfig = ConfigSystem.Load()
 local SecurityLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/habibrodriguez7-art/GuiBaru/refs/heads/main/SecurityLoader.lua"))()
 local CombinedModules = SecurityLoader.LoadModule("CombinedModules")
 
+-- DEBUGGING: Print semua module yang berhasil dimuat
+print("=== MODULE LOADING DEBUG ===")
+print("CombinedModules type:", type(CombinedModules))
+
+if CombinedModules then
+    for moduleName, moduleValue in pairs(CombinedModules) do
+        print(string.format("Module: %s | Type: %s", moduleName, type(moduleValue)))
+    end
+end
+print("===========================")
+
 local instant = CombinedModules.instant
 local instant2 = CombinedModules.instant2
 local blatantv1 = CombinedModules.blatantv1
@@ -257,6 +268,19 @@ local AutoFavorite = CombinedModules.AutoFavorite
 local WebhookModule = CombinedModules.Webhook
 local HideStats = CombinedModules.HideStats
 local Auto9xTotem = CombinedModules.Auto9xTotem
+
+-- DEBUGGING: Cek Auto9xTotem spesifik
+print("=== AUTO9XTOTEM DEBUG ===")
+print("Auto9xTotem type:", type(Auto9xTotem))
+if Auto9xTotem then
+    print("Auto9xTotem.Settings:", Auto9xTotem.Settings)
+    print("Auto9xTotem.GetTotemNames:", type(Auto9xTotem.GetTotemNames))
+    print("Auto9xTotem.SetTotem:", type(Auto9xTotem.SetTotem))
+    print("Auto9xTotem.Start:", type(Auto9xTotem.Start))
+    print("Auto9xTotem.Stop:", type(Auto9xTotem.Stop))
+end
+print("========================")
+
 local EventTeleport = CombinedModules.EventTeleportDynamic or {
     GetEventNames = function() return {"- Module Not Loaded -"} end,
     HasCoords = function() return false end,
@@ -1406,33 +1430,59 @@ local is9xTotemRunning = false
 
 -- PERBAIKAN: Tambahkan validasi lengkap
 if Auto9xTotem and type(Auto9xTotem) == "table" then
-    -- Cek apakah semua function yang dibutuhkan ada
-    if Auto9xTotem.GetTotemNames and Auto9xTotem.SetTotem and Auto9xTotem.Start and Auto9xTotem.Stop then
+    print("[GUI] Auto9xTotem module detected")
+    
+    -- Validasi semua method yang dibutuhkan
+    if type(Auto9xTotem.GetTotemNames) == "function" and 
+       type(Auto9xTotem.SetTotem) == "function" and 
+       type(Auto9xTotem.Start) == "function" and 
+       type(Auto9xTotem.Stop) == "function" then
         
-        local totemNames = Auto9xTotem.GetTotemNames()
+        print("[GUI] All Auto9xTotem methods found")
         
-        makeDropdown(catAuto9xTotem, "Select Totem Type", "rbxassetid://104332967321169", totemNames, "Auto9xTotem.SelectedTotem", function(selected)
-            currentTotem9x = selected
-            Auto9xTotem.SetTotem(selected)
-        end, "Auto9xTotemDropdown")
-        
-        makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
-            is9xTotemRunning = on
-            if on then
-                Auto9xTotem.Start()
-            else
-                Auto9xTotem.Stop()
-            end
+        -- Get totem names safely
+        local success, totemNames = pcall(function()
+            return Auto9xTotem.GetTotemNames()
         end)
+        
+        if success and totemNames then
+            -- Create dropdown
+            makeDropdown(catAuto9xTotem, "Select Totem Type", "rbxassetid://104332967321169", totemNames, "Auto9xTotem.SelectedTotem", function(selected)
+                currentTotem9x = selected
+                pcall(function()
+                    Auto9xTotem.SetTotem(selected)
+                end)
+            end, "Auto9xTotemDropdown")
+            
+            -- Create toggle
+            makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
+                is9xTotemRunning = on
+                if on then
+                    pcall(function()
+                        Auto9xTotem.Start()
+                    end)
+                else
+                    pcall(function()
+                        Auto9xTotem.Stop()
+                    end)
+                end
+            end)
+            
+            print("[GUI] Auto9xTotem UI created successfully")
+        else
+            warn("[GUI] Failed to get totem names: " .. tostring(totemNames))
+        end
     else
-        warn("[GUI] Auto9xTotem module methods not found!")
-        -- Buat placeholder
-        local placeholder = makeLabel(catAuto9xTotem, "⚠️ Module methods missing")
+        warn("[GUI] Auto9xTotem methods missing!")
+        print("GetTotemNames:", type(Auto9xTotem.GetTotemNames))
+        print("SetTotem:", type(Auto9xTotem.SetTotem))
+        print("Start:", type(Auto9xTotem.Start))
+        print("Stop:", type(Auto9xTotem.Stop))
     end
 else
-    warn("[GUI] Auto9xTotem module not loaded!")
-    -- Buat placeholder  
-    local placeholder = makeLabel(catAuto9xTotem, "⚠️ Module not available")
+    warn("[GUI] Auto9xTotem module not loaded or invalid type!")
+    print("Auto9xTotem type:", type(Auto9xTotem))
+    print("Auto9xTotem value:", Auto9xTotem)
 end
 
 -- Skin Animation
