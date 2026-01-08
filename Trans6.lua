@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architectur
+-- Complete rewrite with optimized architecturdas
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -226,6 +226,12 @@ local CombinedModules = SecurityLoader.LoadModule("CombinedModules")
 -- DEBUGGING: Print semua module yang berhasil dimuat
 print("=== MODULE LOADING DEBUG ===")
 print("CombinedModules type:", type(CombinedModules))
+
+-- Fallback jika CombinedModules gagal dimuat
+if not CombinedModules then
+    warn("⚠️ CombinedModules failed to load, creating empty fallback table")
+    CombinedModules = {}
+end
 
 if CombinedModules then
     for moduleName, moduleValue in pairs(CombinedModules) do
