@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architecturdas
+-- Complete rewrite with optimized architectursxxxx
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -218,10 +218,16 @@ end
 CurrentConfig = ConfigSystem.Load()
 
 -- ============================================
--- SECURITY LOADER & MODULES
+-- DIRECT MODULE LOADING (bypass SecurityLoader)
 -- ============================================
-local SecurityLoader = loadstring(game:HttpGet("https://raw.githubusercontent.com/habibrodriguez7-art/GuiBaru/refs/heads/main/SecurityLoader.lua"))()
-local CombinedModules = SecurityLoader.LoadModule("CombinedModules")
+local CombinedModules = nil
+local loadSuccess, loadError = pcall(function()
+    CombinedModules = loadstring(game:HttpGet("https://raw.githubusercontent.com/habibrodriguez7-art/GuiBaru/refs/heads/main/CombinedModule.lua"))()
+end)
+
+if not loadSuccess then
+    warn("❌ Failed to load CombinedModules:", loadError)
+end
 
 -- DEBUGGING: Print semua module yang berhasil dimuat
 print("=== MODULE LOADING DEBUG ===")
