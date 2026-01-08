@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architecture
+-- Complete rewrite with optimized architecturefxc
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -1400,25 +1400,39 @@ makeButton(catAutoTotem, "Auto Totem 3X", function()
     end
 end)
 
--- Di Main Page GUI Anda, setelah Auto Totem 3X
 local catAuto9xTotem = makeCategory(mainPage, "Auto Spawn 9X Totem [BETA]")
 local currentTotem9x = "Luck Totem"
 local is9xTotemRunning = false
 
-if Auto9xTotem then
-    makeDropdown(catAuto9xTotem, "Select Totem Type", "rbxassetid://104332967321169", Auto9xTotem.GetTotemNames(), "Auto9xTotem.SelectedTotem", function(selected)
-        currentTotem9x = selected
-        Auto9xTotem.SetTotem(selected)
-    end, "Auto9xTotemDropdown")
-    
-    makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
-        is9xTotemRunning = on
-        if on then
-            Auto9xTotem.Start()
-        else
-            Auto9xTotem.Stop()
-        end
-    end)
+-- PERBAIKAN: Tambahkan validasi lengkap
+if Auto9xTotem and type(Auto9xTotem) == "table" then
+    -- Cek apakah semua function yang dibutuhkan ada
+    if Auto9xTotem.GetTotemNames and Auto9xTotem.SetTotem and Auto9xTotem.Start and Auto9xTotem.Stop then
+        
+        local totemNames = Auto9xTotem.GetTotemNames()
+        
+        makeDropdown(catAuto9xTotem, "Select Totem Type", "rbxassetid://104332967321169", totemNames, "Auto9xTotem.SelectedTotem", function(selected)
+            currentTotem9x = selected
+            Auto9xTotem.SetTotem(selected)
+        end, "Auto9xTotemDropdown")
+        
+        makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
+            is9xTotemRunning = on
+            if on then
+                Auto9xTotem.Start()
+            else
+                Auto9xTotem.Stop()
+            end
+        end)
+    else
+        warn("[GUI] Auto9xTotem module methods not found!")
+        -- Buat placeholder
+        local placeholder = makeLabel(catAuto9xTotem, "⚠️ Module methods missing")
+    end
+else
+    warn("[GUI] Auto9xTotem module not loaded!")
+    -- Buat placeholder  
+    local placeholder = makeLabel(catAuto9xTotem, "⚠️ Module not available")
 end
 
 -- Skin Animation
