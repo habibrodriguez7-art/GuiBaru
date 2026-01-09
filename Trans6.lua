@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architectursxxxx
+-- Complete rewrite with optimized architectursxxxxcccc
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -280,6 +280,7 @@ local MovementModule = CombinedModules.MovementModule
 local AutoFavorite = CombinedModules.AutoFavorite
 local WebhookModule = CombinedModules.Webhook
 local HideStats = CombinedModules.HideStats
+local AntiStaff = CombinedModules.AntiStaff
 local Auto9xTotem = CombinedModules.Auto9xTotem
 
 -- DEBUGGING: Cek Auto9xTotem spesifik
@@ -1854,9 +1855,12 @@ end)
 -- ============================================
 -- SETTINGS PAGE
 -- ============================================
-local catAFK = makeCategory(settingsPage, "Anti-AFK Protection")
+local catAFK = makeCategory(settingsPage, "Protection Features")
 makeToggle(catAFK, "Enable Anti-AFK", "Settings.AntiAFK", function(on)
     if AntiAFK then if on then AntiAFK.Start() else AntiAFK.Stop() end end
+end)
+makeToggle(catAFK, "Anti Staff", "Settings.AntiStaff", function(on)
+    if AntiStaff then if on then AntiStaff.Start() else AntiStaff.Stop() end end
 end)
 
 local catUtility = makeCategory(settingsPage, "Player Utility")
