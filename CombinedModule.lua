@@ -2,7 +2,7 @@ local CombinedModules = {}
 
 -- Module instantaaa
 CombinedModules.instant = (function()
-    -- âš¡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)
+    -- âš¡ ULTRA SPEED AUTO FISHING v29.4 (Fast Mode - Safe Config Loading)efefef
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local Players = game:GetService("Players")
     local localPlayer = Players.LocalPlayer
@@ -6606,6 +6606,8 @@ return {
 }
 end)()
 
+-- Module Auto9xTotem
+-- ðŸ”¥ V3 Engine + Anti-Drown Protection + Totem Selector
 CombinedModules.Auto9xTotem = (function()
     print("[CombinedModules] Loading Auto9xTotem V3...")
     
@@ -6628,11 +6630,8 @@ CombinedModules.Auto9xTotem = (function()
     local clientData = nil
     local RF_EquipOxygenTank = nil
     local RF_UnequipOxygenTank = nil
-    local remotesInitialized = false
     
     local function InitializeRemotes()
-        if remotesInitialized then return true end
-        
         local success = pcall(function()
             local Net = ReplicatedStorage:WaitForChild("Packages", 5)
                 :WaitForChild("_Index", 5)
@@ -6643,71 +6642,17 @@ CombinedModules.Auto9xTotem = (function()
             local Replion = require(ReplicatedStorage:WaitForChild("Packages", 5):WaitForChild("Replion", 5))
             clientData = Replion.Client:WaitReplion("Data")
             
-            -- PERBAIKAN: Tunggu remotes dengan lebih sabar
-            local RPath = ReplicatedStorage:WaitForChild("Remotes", 3)
-            if RPath then
-                local RFFolder = RPath:WaitForChild("RF", 3)
-                if RFFolder then
-                    RF_EquipOxygenTank = RFFolder:WaitForChild("EquipOxygenTank", 3)
-                    RF_UnequipOxygenTank = RFFolder:WaitForChild("UnequipOxygenTank", 3)
-                end
-            end
-            
-            -- Fallback jika Remotes tidak ada
-            if not RF_EquipOxygenTank then
-                RPath = ReplicatedStorage:FindFirstChild("RF") or ReplicatedStorage
-                RF_EquipOxygenTank = RPath:FindFirstChild("EquipOxygenTank")
-                RF_UnequipOxygenTank = RPath:FindFirstChild("UnequipOxygenTank")
-            end
+            -- Get oxygen tank remotes from correct path
+            local Net = ReplicatedStorage:WaitForChild("Packages", 5)
+                :WaitForChild("_Index", 5)
+                :WaitForChild("sleitnick_net@0.2.0", 5)
+                :WaitForChild("net", 5)
+
+            RF_EquipOxygenTank = Net:WaitForChild("RF/EquipOxygenTank", 5)
+            RF_UnequipOxygenTank = Net:WaitForChild("RF/UnequipOxygenTank", 5)
         end)
-        
-        if success and SpawnTotemRemote and clientData then
-            remotesInitialized = true
-            print("[Auto9xTotem] ✅ Remotes initialized successfully")
-            if RF_EquipOxygenTank then
-                print("[Auto9xTotem] ✅ Oxygen Tank remotes found")
-            else
-                warn("[Auto9xTotem] ⚠️ Oxygen Tank remotes NOT found - will skip equipment")
-            end
-        end
         
         return success
-    end
-    
-    -- ========================================
-    -- EQUIP OXYGEN TANK WITH RETRY
-    -- ========================================
-    local function EquipOxygenTank()
-        if not RF_EquipOxygenTank then
-            warn("[Auto9xTotem] RF_EquipOxygenTank not available, skipping...")
-            return false
-        end
-        
-        local maxRetries = 3
-        for attempt = 1, maxRetries do
-            local success = pcall(function()
-                RF_EquipOxygenTank:InvokeServer(105)
-            end)
-            
-            if success then
-                print(string.format("[Auto9xTotem] ✅ Oxygen Tank equipped (attempt %d)", attempt))
-                return true
-            else
-                warn(string.format("[Auto9xTotem] ⚠️ Failed to equip oxygen tank (attempt %d/%d)", attempt, maxRetries))
-                task.wait(0.5)
-            end
-        end
-        
-        return false
-    end
-    
-    local function UnequipOxygenTank()
-        if not RF_UnequipOxygenTank then return end
-        
-        pcall(function()
-            RF_UnequipOxygenTank:InvokeServer()
-            print("[Auto9xTotem] 🔓 Oxygen Tank unequipped")
-        end)
     end
     
     -- ========================================
@@ -7044,10 +6989,13 @@ CombinedModules.Auto9xTotem = (function()
             print("[Auto9xTotem] Starting V3 Engine...")
             print("[Auto9xTotem] Selected Totem: " .. selectedTotemName)
             
-            -- PERBAIKAN: Equip oxygen tank dengan retry
-            print("[Auto9xTotem] 🤿 Equipping Oxygen Tank...")
-            EquipOxygenTank()
-            task.wait(1) -- Tunggu equipment ter-apply
+            -- Equip oxygen tank
+            if RF_EquipOxygenTank then
+                pcall(function() 
+                    local args = {105}
+                    RF_EquipOxygenTank:InvokeServer(unpack(args))
+                end)
+            end
             
             -- Full health
             if hum then hum.Health = hum.MaxHealth end
@@ -7055,7 +7003,7 @@ CombinedModules.Auto9xTotem = (function()
             EnableV3Physics()
             task.wait(0.5)
             
-            print("🚀 AUTO PLACE 9 TOTEMS - Type: " .. selectedTotemName)
+            print("ðŸš€ AUTO PLACE 9 TOTEMS - Type: " .. selectedTotemName)
             
             -- Loop through all 9 spots
             for i, refSpot in ipairs(REF_SPOTS) do
@@ -7065,14 +7013,12 @@ CombinedModules.Auto9xTotem = (function()
                 local targetPos = startPosition.Position + relativePos
                 local targetCFrame = CFrame.new(targetPos)
                 
-                print(string.format("[Auto9xTotem] 📍 Flying to spot %d/9...", i))
                 FlyPhysicsTo(targetPos) 
                 HoldPosition(targetCFrame)
                 task.wait(1.5)
                 
                 local uuid = totemUUIDs[i]
                 if uuid and SpawnTotemRemote then
-                    print(string.format("[Auto9xTotem] 🗿 Placing totem %d/9...", i))
                     pcall(function() SpawnTotemRemote:FireServer(uuid) end)
                     task.wait(2.5)
                 end
@@ -7083,7 +7029,6 @@ CombinedModules.Auto9xTotem = (function()
             
             -- Return to start
             if Auto9xTotem.Settings.IsRunning then
-                print("[Auto9xTotem] 🏠 Returning to start position...")
                 FlyPhysicsTo(startPosition.Position)
                 HoldPosition(startPosition)
                 task.wait(1)
@@ -7092,12 +7037,15 @@ CombinedModules.Auto9xTotem = (function()
             -- Cleanup
             StopHold()
             
-            print("[Auto9xTotem] 🔓 Unequipping Oxygen Tank...")
-            UnequipOxygenTank()
+           if RF_UnequipOxygenTank then
+                pcall(function() 
+                    RF_UnequipOxygenTank:InvokeServer()
+                end)
+            end
             
             DisableV3Physics() 
             Auto9xTotem.Settings.IsRunning = false
-            print("[Auto9xTotem] ✅ Formation complete!")
+            print("[Auto9xTotem] Formation complete!")
         end)
     end
     
@@ -7118,26 +7066,14 @@ CombinedModules.Auto9xTotem = (function()
     end
     
     function Auto9xTotem.Start()
-        if Auto9xTotem.Settings.IsRunning then 
-            warn("[Auto9xTotem] Already running!")
-            return false 
-        end
+        if Auto9xTotem.Settings.IsRunning then return false end
         
-        -- PERBAIKAN: Pastikan remotes sudah di-initialize
-        print("[Auto9xTotem] 🔄 Checking remotes...")
-        if not remotesInitialized then
-            print("[Auto9xTotem] ⏳ Initializing remotes...")
-            local success = InitializeRemotes()
-            if not success then
-                warn("[Auto9xTotem] ❌ Failed to initialize remotes")
+        -- Initialize remotes if not done
+        if not SpawnTotemRemote then
+            if not InitializeRemotes() then
+                warn("[Auto9xTotem] Failed to initialize remotes")
                 return false
             end
-            task.wait(0.5) -- Beri waktu untuk stabilisasi
-        end
-        
-        if not SpawnTotemRemote or not clientData then
-            warn("[Auto9xTotem] ❌ Core remotes not available")
-            return false
         end
         
         Auto9xTotem.Settings.IsRunning = true
@@ -7148,7 +7084,6 @@ CombinedModules.Auto9xTotem = (function()
     function Auto9xTotem.Stop()
         if not Auto9xTotem.Settings.IsRunning then return false end
         
-        print("[Auto9xTotem] 🛑 Stopping...")
         Auto9xTotem.Settings.IsRunning = false
         
         if AUTO_9_TOTEM_THREAD then
@@ -7157,7 +7092,6 @@ CombinedModules.Auto9xTotem = (function()
         
         DisableV3Physics()
         StopHold()
-        UnequipOxygenTank()
         
         return true
     end
@@ -7174,8 +7108,7 @@ CombinedModules.Auto9xTotem = (function()
     -- INITIALIZE ON LOAD
     -- ========================================
     task.spawn(function()
-        task.wait(2) -- Tunggu lebih lama untuk game fully load
-        print("[Auto9xTotem] 🔄 Pre-initializing remotes...")
+        task.wait(1)
         InitializeRemotes()
     end)
     
