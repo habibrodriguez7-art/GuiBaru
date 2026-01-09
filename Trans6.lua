@@ -251,6 +251,7 @@ local instant2 = CombinedModules.instant2
 local blatantv1 = CombinedModules.blatantv1
 local UltraBlatant = CombinedModules.UltraBlatant
 local blatantv2fix = CombinedModules.BlatantFixedV1
+local blatantBETA = CombinedModules.blatantBETA
 local blatantv2 = CombinedModules.blatantv2
 local NoFishingAnimation = CombinedModules.NoFishingAnimation
 local LockPosition = CombinedModules.LockPosition
@@ -1320,16 +1321,16 @@ makeInput(catAutoFishing, "Cancel Delay", "InstantFishing.CancelDelay", 0.19, fu
     if instant2 then instant2.Settings.CancelDelay = v end
 end)
 
--- Blatant Tester
-local catBlatantV2 = makeCategory(mainPage, "Blatant Tester")
-makeToggle(catBlatantV2, "Blatant Tester", "BlatantTester.Enabled", function(on) 
-    if blatantv2fix then if on then blatantv2fix.Start() else blatantv2fix.Stop() end end
+-- Blatant BETA Version
+local catBlatantBETA = makeCategory(mainPage, "Blatant BETA Version")
+makeToggle(catBlatantBETA, "Blatant Mode", "BlatantBETA.Enabled", function(on) 
+    if blatantBETA then if on then blatantBETA.Start() else blatantBETA.Stop() end end
 end)
-makeInput(catBlatantV2, "Complete Delay", "BlatantTester.CompleteDelay", 0.5, function(v)
-    if blatantv2fix then blatantv2fix.Settings.CompleteDelay = v end
+makeInput(catBlatantBETA, "Complete Delay", "BlatantBETA.CompleteDelay", 0.001, function(v)
+    if blatantBETA and blatantBETA.UpdateSettings then blatantBETA.UpdateSettings(v, nil) end
 end)
-makeInput(catBlatantV2, "Cancel Delay", "BlatantTester.CancelDelay", 0.1, function(v)
-    if blatantv2fix then blatantv2fix.Settings.CancelDelay = v end
+makeInput(catBlatantBETA, "Cancel Delay", "BlatantBETA.CancelDelay", 0.001, function(v)
+    if blatantBETA and blatantBETA.UpdateSettings then blatantBETA.UpdateSettings(nil, v) end
 end)
 
 -- Blatant V1
@@ -1354,6 +1355,18 @@ makeInput(catUltraBlatant, "Complete Delay", "UltraBlatant.CompleteDelay", 0.05,
 end)
 makeInput(catUltraBlatant, "Cancel Delay", "UltraBlatant.CancelDelay", 0.1, function(v)
     if UltraBlatant and UltraBlatant.UpdateSettings then UltraBlatant.UpdateSettings(nil, v, nil) end
+end)
+
+-- Blatant Tester
+local catBlatantV2 = makeCategory(mainPage, "Blatant V3")
+makeToggle(catBlatantV2, "Blatant Tester", "BlatantTester.Enabled", function(on) 
+    if blatantv2fix then if on then blatantv2fix.Start() else blatantv2fix.Stop() end end
+end)
+makeInput(catBlatantV2, "Complete Delay", "BlatantTester.CompleteDelay", 0.5, function(v)
+    if blatantv2fix then blatantv2fix.Settings.CompleteDelay = v end
+end)
+makeInput(catBlatantV2, "Cancel Delay", "BlatantTester.CancelDelay", 0.1, function(v)
+    if blatantv2fix then blatantv2fix.Settings.CancelDelay = v end
 end)
 
 -- Support Features
