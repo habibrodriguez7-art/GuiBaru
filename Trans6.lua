@@ -1,5 +1,5 @@
 -- LynxGUI v3.0 - Zero Memory Leak Edition
--- Complete rewrite with optimized architectursxxxxcccc
+-- Complete rewrite with optimized architectur
 -- FREE NOT FOR SALE
 
 repeat task.wait() until game:IsLoaded()
@@ -1480,8 +1480,8 @@ if Auto9xTotem and type(Auto9xTotem) == "table" then
                 end)
             end, "Auto9xTotemDropdown")
             
-            -- Create toggle
-            makeToggle(catAuto9xTotem, "Enable 9x Totem", "Auto9xTotem.Enabled", function(on)
+            -- Create toggle (NO AUTO-SAVE - tidak menyimpan ke config)
+            makeToggle(catAuto9xTotem, "Enable 9x Totem", nil, function(on)
                 is9xTotemRunning = on
                 if on then
                     pcall(function()
