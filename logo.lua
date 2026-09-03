@@ -404,7 +404,7 @@ function Library:CreateWindow(config)
     })
     new("ImageLabel", {
         Parent = scriptHeader,
-        Image = "rbxassetid://117184319641319",
+        Image = "rbxassetid://104332967321169",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(0, 58, 0.5, -8),
         BackgroundTransparency = 1,
@@ -652,7 +652,7 @@ function Library:CreateWindow(config)
             BackgroundColor3 = colors.bg2,
             BackgroundTransparency = 0,
             BorderSizePixel = 0,
-            Image = "rbxassetid://118176705805619",
+            Image = "rbxassetid://117184319641319",
             ScaleType = Enum.ScaleType.Fit,
             AutoButtonColor = false,
             Active = true,
